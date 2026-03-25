@@ -24,12 +24,21 @@ The broader rollout and target benchmark size are documented in `docs/benchmark-
 
 Latest comparison date: `2026-03-25`
 
-| Model | Passed | Total | Pass rate | Compile | Edition2024 | Semantic |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `omnicoder-9b` | 4 | 6 | 66.67% | 2/2 | 2/2 | 0/2 |
-| `qwen3.5-9b` | 3 | 6 | 50.00% | 2/2 | 1/2 | 0/2 |
-| `omnicoder-2-9b` | 2 | 6 | 33.33% | 2/2 | 0/2 | 0/2 |
-| `omnicoder-9b-strand-rust-v1` | 2 | 6 | 33.33% | 1/2 | 1/2 | 0/2 |
+Composite score methodology for this leaderboard:
+
+- `compile`: 30 points total
+- `edition2024`: 30 points total
+- `semantic`: 40 points total
+- full pass gets full case credit
+- `fmt`-only and `clippy`-only failures keep discounted partial credit
+
+| Model | Score /100 | Passed | Total | Pass rate | Compile | Edition2024 | Semantic |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `omnicoder-9b` | 92.00 | 4 | 6 | 66.67% | 2/2 | 2/2 | 0/2 |
+| `qwen3.5-9b` | 89.00 | 3 | 6 | 50.00% | 2/2 | 1/2 | 0/2 |
+| `qwen3.5-35b-a3b` | 87.50 | 3 | 6 | 50.00% | 2/2 | 1/2 | 0/2 |
+| `omnicoder-2-9b` | 62.00 | 2 | 6 | 33.33% | 2/2 | 0/2 | 0/2 |
+| `omnicoder-9b-strand-rust-v1` | 47.00 | 2 | 6 | 33.33% | 1/2 | 1/2 | 0/2 |
 
 Detailed report:
 
