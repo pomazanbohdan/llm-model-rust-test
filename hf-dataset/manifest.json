@@ -1,0 +1,12 @@
+{
+  "dataset_name": "RustForge Personal Rust Dataset",
+  "dataset_version": "0.2.0",
+  "generated_at": "2026-03-25T08:48:54",
+  "source_dir": "personal-dataset\\\\train\\\\seed",
+  "output_dir": "hf-dataset",
+  "dataset_repo_id": "pomazanbohdan/rustforge-personal-rust-dataset",
+  "train_rows": 8,
+  "record_format": "chatml_messages",
+  "unsloth_compatible": true,
+  "notes": "Unified Hugging Face export built from draft seed candidates in ChatML-compatible messages format."
+}

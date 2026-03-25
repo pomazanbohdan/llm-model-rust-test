@@ -1,0 +1,50 @@
+{
+  "id": "docs.user-id-doctest.0001",
+  "category": "doctest_doc_fix",
+  "difficulty": "easy",
+  "edition": "2024",
+  "tier": "core",
+  "source": {
+    "type": "real_crate_mining",
+    "name": "docs_templates",
+    "license_status": "approved",
+    "leakage_risk": "low",
+    "notes": "Draft rustdoc and doctest example."
+  },
+  "task": {
+    "instruction": "Fix the documentation example so it matches the actual API and compiles as a doctest.",
+    "constraints": [
+      "Do not change the public type names.",
+      "Keep the documentation concise."
+    ],
+    "public_api_locked": true,
+    "minimal_patch_expected": true
+  },
+  "workspace": {
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "pub struct UserId(u64);\n\nimpl UserId {\n    pub fn new(value: u64) -> Self {\n        Self(value)\n    }\n\n    pub fn get(self) -> u64 {\n        self.0\n    }\n}\n\n/// Parse an integer-like user identifier.\n///\n/// ```\n/// use demo::UserId;\n///\n/// let id = UserId::parse(\"42\").unwrap();\n/// assert_eq!(id.value(), 42);\n/// ```\npub fn parse_user_id(input: &str) -> Result<UserId, std::num::ParseIntError> {\n    input.parse::<u64>().map(UserId::new)\n}\n"
+      }
+    ]
+  },
+  "target": {
+    "type": "patch",
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "pub struct UserId(u64);\n\nimpl UserId {\n    pub fn new(value: u64) -> Self {\n        Self(value)\n    }\n\n    pub fn get(self) -> u64 {\n        self.0\n    }\n}\n\n/// Parse an integer-like user identifier.\n///\n/// ```\n/// use demo::{parse_user_id, UserId};\n///\n/// let id = parse_user_id(\"42\").unwrap();\n/// assert_eq!(id.get(), 42);\n/// ```\npub fn parse_user_id(input: &str) -> Result<UserId, std::num::ParseIntError> {\n    input.parse::<u64>().map(UserId::new)\n}\n"
+      }
+    ]
+  },
+  "validation": {
+    "check": false,
+    "clippy": false,
+    "test": false,
+    "fmt": false,
+    "doc": false,
+    "doctest": false,
+    "notes": "Draft doctest example pending crate-name normalization and validation."
+  },
+  "tags": ["rustdoc", "doctest", "documentation"]
+}

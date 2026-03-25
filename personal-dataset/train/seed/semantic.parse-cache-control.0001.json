@@ -1,0 +1,60 @@
+{
+  "id": "semantic.parse-cache-control.0001",
+  "category": "semantic_impl",
+  "difficulty": "medium",
+  "edition": "2024",
+  "tier": "core",
+  "source": {
+    "type": "internal_suite_seed",
+    "name": "personal_semantic_templates",
+    "license_status": "internal_only",
+    "leakage_risk": "low",
+    "notes": "Draft semantic implementation example."
+  },
+  "task": {
+    "instruction": "Implement a parser for a Cache-Control max-age directive.",
+    "constraints": [
+      "Accept inputs like 'max-age=60'.",
+      "Reject missing '=', wrong directive names, and invalid numbers.",
+      "Trim surrounding ASCII whitespace from the whole input."
+    ],
+    "public_api_locked": true,
+    "minimal_patch_expected": false
+  },
+  "workspace": {
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "#[derive(Debug, PartialEq, Eq)]\npub enum CacheControlError {\n    InvalidDirective,\n    InvalidNumber,\n}\n\npub fn parse_max_age(input: &str) -> Result<u64, CacheControlError> {\n    todo!()\n}\n"
+      }
+    ]
+  },
+  "oracle": {
+    "hidden_files": [
+      {
+        "path": "tests/hidden.rs",
+        "content": "#[test]\nfn hidden_placeholder() {}\n"
+      }
+    ]
+  },
+  "target": {
+    "type": "patch",
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "#[derive(Debug, PartialEq, Eq)]\npub enum CacheControlError {\n    InvalidDirective,\n    InvalidNumber,\n}\n\npub fn parse_max_age(input: &str) -> Result<u64, CacheControlError> {\n    let trimmed = input.trim();\n    let (name, value) = trimmed\n        .split_once('=')\n        .ok_or(CacheControlError::InvalidDirective)?;\n    if name.trim() != \"max-age\" {\n        return Err(CacheControlError::InvalidDirective);\n    }\n    value\n        .trim()\n        .parse::<u64>()\n        .map_err(|_| CacheControlError::InvalidNumber)\n}\n"
+      }
+    ]
+  },
+  "validation": {
+    "check": false,
+    "clippy": false,
+    "test": false,
+    "fmt": false,
+    "doc": false,
+    "doctest": false,
+    "notes": "Draft candidate generated; hidden tests to be authored and validated."
+  },
+  "tags": ["parser", "semantic", "strings"]
+}
+

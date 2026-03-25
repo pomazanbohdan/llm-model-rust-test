@@ -1,0 +1,52 @@
+{
+  "id": "macro.option-map-builder.0001",
+  "category": "macro_fix",
+  "difficulty": "medium",
+  "edition": "2024",
+  "tier": "core",
+  "source": {
+    "type": "synthetic_mutation",
+    "name": "macro_rules_templates",
+    "license_status": "approved",
+    "leakage_risk": "low",
+    "notes": "Draft macro_rules fix example."
+  },
+  "task": {
+    "instruction": "Fix the declarative macro so it accepts an optional trailing comma and builds a BTreeMap.",
+    "constraints": [
+      "Do not change the macro name.",
+      "Return a BTreeMap<String, String>.",
+      "Keep the API ergonomic for callers."
+    ],
+    "public_api_locked": true,
+    "minimal_patch_expected": false
+  },
+  "workspace": {
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "use std::collections::BTreeMap;\n\n#[macro_export]\nmacro_rules! string_map {\n    ($($key:expr => $value:expr),*) => {{\n        let mut map = BTreeMap::new();\n        $(\n            map.insert($key.to_string(), $value.to_string());\n        )*\n        map\n    }};\n}\n"
+      }
+    ]
+  },
+  "target": {
+    "type": "patch",
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "use std::collections::BTreeMap;\n\n#[macro_export]\nmacro_rules! string_map {\n    ($($key:expr => $value:expr),* $(,)?) => {{\n        let mut map = BTreeMap::new();\n        $(\n            map.insert($key.to_string(), $value.to_string());\n        )*\n        map\n    }};\n}\n"
+      }
+    ]
+  },
+  "validation": {
+    "check": false,
+    "clippy": false,
+    "test": false,
+    "fmt": false,
+    "doc": false,
+    "doctest": false,
+    "notes": "Draft macro example pending test coverage for trailing comma acceptance."
+  },
+  "tags": ["macro_rules", "collections", "ergonomics"]
+}
+

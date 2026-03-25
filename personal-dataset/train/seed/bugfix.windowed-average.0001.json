@@ -1,0 +1,59 @@
+{
+  "id": "bugfix.windowed-average.0001",
+  "category": "test_driven_bugfix",
+  "difficulty": "medium",
+  "edition": "2024",
+  "tier": "core",
+  "source": {
+    "type": "synthetic_mutation",
+    "name": "behavioral_bug_mutation",
+    "license_status": "approved",
+    "leakage_risk": "low",
+    "notes": "Draft fail-to-pass example."
+  },
+  "task": {
+    "instruction": "Fix the sliding average implementation without changing the public API.",
+    "constraints": [
+      "Preserve integer division semantics.",
+      "Return an empty vector when the window is zero or larger than the input length."
+    ],
+    "public_api_locked": true,
+    "minimal_patch_expected": true
+  },
+  "workspace": {
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "pub fn moving_average(values: &[u32], window: usize) -> Vec<u32> {\n    if window == 0 {\n        return vec![0];\n    }\n\n    values\n        .windows(window)\n        .map(|slice| slice.iter().sum::<u32>() / window as u32)\n        .collect()\n}\n"
+      }
+    ]
+  },
+  "oracle": {
+    "hidden_files": [
+      {
+        "path": "tests/hidden.rs",
+        "content": "#[test]\nfn hidden_placeholder() {}\n"
+      }
+    ]
+  },
+  "target": {
+    "type": "patch",
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "pub fn moving_average(values: &[u32], window: usize) -> Vec<u32> {\n    if window == 0 || window > values.len() {\n        return Vec::new();\n    }\n\n    values\n        .windows(window)\n        .map(|slice| slice.iter().sum::<u32>() / window as u32)\n        .collect()\n}\n"
+      }
+    ]
+  },
+  "validation": {
+    "check": false,
+    "clippy": false,
+    "test": false,
+    "fmt": false,
+    "doc": false,
+    "doctest": false,
+    "notes": "Draft fail-to-pass example pending hidden tests and validation."
+  },
+  "tags": ["bugfix", "tests", "minimal-patch"]
+}
+

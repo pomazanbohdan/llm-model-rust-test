@@ -1,0 +1,14 @@
+category,tier,target_share,target_seed_count,validation_profile
+compile_repair,core,0.20,2000,check+clippy+fmt+doc
+semantic_impl,core,0.20,2000,check+clippy+test+fmt+doc+doctest
+test_driven_bugfix,core,0.15,1500,check+clippy+test+fmt+doc+doctest
+edition2024_migration,core,0.10,1000,check+clippy+test+fmt+doc+doctest
+async_concurrency_fix,core,0.10,1000,check+clippy+test+fmt+doc+doctest
+unsafe_ffi_fix,core,0.10,1000,check+clippy+test+fmt+doc
+clippy_fmt_cleanup,core,0.05,500,check+clippy+fmt+doc
+macro_fix,core,0.05,500,check+clippy+test+fmt+doc
+api_refactor,core,0.03,300,check+clippy+test+fmt+doc+doctest
+doctest_doc_fix,core,0.02,200,check+clippy+doc+doctest
+rust_qa,auxiliary,0.03,300,metadata_only
+review_preference,auxiliary,0.02,200,metadata_only
+

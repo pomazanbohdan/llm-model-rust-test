@@ -1,0 +1,19 @@
+feature_area,subfeature,category,target_count,priority,source_strategy,notes
+ownership,moves_and_borrows,compile_repair,800,p0,mutation_plus_real_patch,borrow-checker is a first-order Rust failure mode
+ownership,lifetime_design,compile_repair,700,p0,mutation_plus_real_patch,include returned references and trait object lifetimes
+semantics,hidden_test_functionality,semantic_impl,2000,p0,internal_suite_seed,core benchmark alignment
+repair,failing_tests_to_patch,test_driven_bugfix,1500,p0,real_patch_plus_internal,prefer minimal patches
+tooling,clippy_cleanup,clippy_fmt_cleanup,600,p1,synthetic_mutation,semantic-preserving quality fixes
+tooling,fmt_cleanup,clippy_fmt_cleanup,500,p1,synthetic_mutation,reduce cheap benchmark misses
+edition2024,temporary_scope_changes,edition2024_migration,450,p0,edition_specific_templates,must target current stable behavior
+edition2024,unsafe_extern_and_attrs,edition2024_migration,450,p0,edition_specific_templates,high risk of outdated patterns
+edition2024,newly_unsafe_std_apis,edition2024_migration,250,p1,edition_specific_templates,include env mutation behavior
+async,lock_scope_and_await,async_concurrency_fix,900,p0,real_async_patterns,catch deadlock-prone usage
+async,cancellation_and_shutdown,async_concurrency_fix,600,p0,behavioral_tests,requires execution tests
+unsafe,ffi_signatures,unsafe_ffi_fix,700,p0,real_patch_plus_templates,focus on extern blocks and boundary correctness
+unsafe,safety_comments_and_local_unsafe,unsafe_ffi_fix,500,p0,real_patch_plus_templates,prevent superficial unsafe style
+macros,macro_rules_fragments,macro_fix,500,p1,edition_specific_templates,include expr fragment behavior changes
+api,public_api_refactor,api_refactor,400,p1,real_crate_mining,Result-centric redesign and trait ergonomics
+docs,doctest_correctness,doctest_doc_fix,350,p1,real_crate_mining,docs must compile and run
+cargo,workspace_and_features,semantic_impl,300,p1,workspace_templates,real Cargo workflows matter for Rust development
+

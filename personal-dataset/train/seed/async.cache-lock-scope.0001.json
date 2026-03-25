@@ -1,0 +1,60 @@
+{
+  "id": "async.cache-lock-scope.0001",
+  "category": "async_concurrency_fix",
+  "difficulty": "hard",
+  "edition": "2024",
+  "tier": "core",
+  "source": {
+    "type": "synthetic_mutation",
+    "name": "async_lock_scope_templates",
+    "license_status": "approved",
+    "leakage_risk": "low",
+    "notes": "Draft async lock-scope task."
+  },
+  "task": {
+    "instruction": "Fix the async cache refresh helper so it does not await while holding a mutex guard.",
+    "constraints": [
+      "Keep the public API unchanged.",
+      "Preserve the existing caching behavior.",
+      "Target idiomatic async Rust."
+    ],
+    "public_api_locked": true,
+    "minimal_patch_expected": true
+  },
+  "workspace": {
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "use std::sync::Arc;\nuse tokio::sync::Mutex;\n\npub async fn refresh(cache: Arc<Mutex<Option<String>>>) -> String {\n    let mut guard = cache.lock().await;\n    if let Some(value) = &*guard {\n        return value.clone();\n    }\n    let loaded = load_value().await;\n    *guard = Some(loaded.clone());\n    loaded\n}\n\nasync fn load_value() -> String {\n    \"loaded\".to_string()\n}\n"
+      }
+    ]
+  },
+  "oracle": {
+    "hidden_files": [
+      {
+        "path": "tests/hidden.rs",
+        "content": "#[test]\nfn hidden_placeholder() {}\n"
+      }
+    ]
+  },
+  "target": {
+    "type": "patch",
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "use std::sync::Arc;\nuse tokio::sync::Mutex;\n\npub async fn refresh(cache: Arc<Mutex<Option<String>>>) -> String {\n    {\n        let guard = cache.lock().await;\n        if let Some(value) = &*guard {\n            return value.clone();\n        }\n    }\n\n    let loaded = load_value().await;\n    let mut guard = cache.lock().await;\n    if let Some(value) = &*guard {\n        return value.clone();\n    }\n    *guard = Some(loaded.clone());\n    loaded\n}\n\nasync fn load_value() -> String {\n    \"loaded\".to_string()\n}\n"
+      }
+    ]
+  },
+  "validation": {
+    "check": false,
+    "clippy": false,
+    "test": false,
+    "fmt": false,
+    "doc": false,
+    "doctest": false,
+    "notes": "Draft async example pending runtime validation."
+  },
+  "tags": ["async", "mutex", "await-scope"]
+}
+

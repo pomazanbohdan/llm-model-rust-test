@@ -1,0 +1,17 @@
+{
+  "dataset": "RustForge Personal Dataset",
+  "split": "train/seed",
+  "status": "draft_candidates",
+  "generated_at": "2026-03-25",
+  "examples": [
+    "compile.repair-header-key.0001",
+    "semantic.parse-cache-control.0001",
+    "bugfix.windowed-average.0001",
+    "edition2024.env-bootstrap-guard.0001",
+    "async.cache-lock-scope.0001",
+    "unsafe.ffi-c-string.0001",
+    "macro.option-map-builder.0001",
+    "docs.user-id-doctest.0001"
+  ]
+}
+

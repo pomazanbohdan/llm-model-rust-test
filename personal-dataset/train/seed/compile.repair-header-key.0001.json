@@ -1,0 +1,52 @@
+{
+  "id": "compile.repair-header-key.0001",
+  "category": "compile_repair",
+  "difficulty": "easy",
+  "edition": "2024",
+  "tier": "core",
+  "source": {
+    "type": "synthetic_mutation",
+    "name": "borrow_mutation_generator",
+    "license_status": "approved",
+    "leakage_risk": "low",
+    "notes": "Draft seed example pending execution validation."
+  },
+  "task": {
+    "instruction": "Fix the function with the smallest reasonable patch.",
+    "constraints": [
+      "Keep the public API unchanged.",
+      "Avoid cloning the entire vector.",
+      "Target Rust edition 2024."
+    ],
+    "public_api_locked": true,
+    "minimal_patch_expected": true
+  },
+  "workspace": {
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "pub fn push_first_header_key(headers: &mut Vec<String>) {\n    let first = headers.first().unwrap_or(&String::from(\"x-default\"));\n    headers.push(first.to_ascii_lowercase());\n}\n"
+      }
+    ]
+  },
+  "target": {
+    "type": "patch",
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "pub fn push_first_header_key(headers: &mut Vec<String>) {\n    let first = headers\n        .first()\n        .cloned()\n        .unwrap_or_else(|| \"x-default\".to_string());\n    headers.push(first.to_ascii_lowercase());\n}\n"
+      }
+    ]
+  },
+  "validation": {
+    "check": false,
+    "clippy": false,
+    "test": false,
+    "fmt": false,
+    "doc": false,
+    "doctest": false,
+    "notes": "Draft candidate generated; execution validation not yet run."
+  },
+  "tags": ["borrow-checker", "minimal-patch", "compile"]
+}
+

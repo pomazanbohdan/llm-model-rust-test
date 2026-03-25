@@ -35,6 +35,35 @@ Detailed report:
 
 - [reports/2026-03-25-model-comparison.md](/C:/project/rust-test/reports/2026-03-25-model-comparison.md)
 
+## Personal Dataset
+
+The repository now includes a separate personal Rust dataset scaffold under:
+
+- [personal-dataset](/C:/project/rust-test/personal-dataset)
+
+This is the starting point for a benchmark-aligned, execution-first Rust training dataset with:
+
+- explicit acceptance rules
+- a canonical example schema
+- donor source policy
+- a coverage matrix
+- an implementation roadmap
+- a first generated seed set of Rust task examples
+
+It also includes a unified Hugging Face export pipeline:
+
+- builder: [build-hf-unified-dataset.ps1](/C:/project/rust-test/scripts/build-hf-unified-dataset.ps1)
+- publisher: [publish-hf-dataset.ps1](/C:/project/rust-test/scripts/publish-hf-dataset.ps1)
+- output folder: [hf-dataset](/C:/project/rust-test/hf-dataset)
+- published dataset: [pomazanbohdan/rustforge-personal-rust-dataset](https://huggingface.co/datasets/pomazanbohdan/rustforge-personal-rust-dataset)
+
+The final export is designed as one unified SFT dataset:
+
+- one `train.jsonl` file
+- ChatML-style `messages` rows for direct use in Unsloth
+- `prompt` and `completion` convenience columns
+- Rust task metadata and provenance kept in the same record
+
 ## Layout
 
 ```text

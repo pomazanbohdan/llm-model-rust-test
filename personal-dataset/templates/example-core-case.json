@@ -1,0 +1,64 @@
+{
+  "id": "semantic.parse-endpoint.0001",
+  "category": "semantic_impl",
+  "difficulty": "medium",
+  "edition": "2024",
+  "tier": "core",
+  "source": {
+    "type": "internal_suite_seed",
+    "name": "internal_eval_suite",
+    "license_status": "internal_only",
+    "leakage_risk": "low",
+    "notes": "Derived from the same task family as the internal benchmark but not from the blind test itself."
+  },
+  "task": {
+    "instruction": "Implement parse_endpoint in the provided crate.",
+    "constraints": [
+      "Keep the public API unchanged.",
+      "Reject missing separators, empty hosts, and invalid ports.",
+      "Target Rust edition 2024."
+    ],
+    "public_api_locked": true,
+    "minimal_patch_expected": false
+  },
+  "workspace": {
+    "files": [
+      {
+        "path": "Cargo.toml",
+        "content": "[package]\nname = \"semantic_parse_endpoint\"\nversion = \"0.1.0\"\nedition = \"2024\"\n"
+      },
+      {
+        "path": "src/lib.rs",
+        "content": "pub fn parse_endpoint(input: &str) -> Result<(String, u16), ()> {\n    todo!()\n}\n"
+      }
+    ]
+  },
+  "oracle": {
+    "hidden_files": [
+      {
+        "path": "tests/hidden.rs",
+        "content": "// hidden execution tests live here\n"
+      }
+    ]
+  },
+  "target": {
+    "type": "patch",
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "pub fn parse_endpoint(input: &str) -> Result<(String, u16), ()> {\n    let trimmed = input.trim();\n    let (host, port) = trimmed.split_once(':').ok_or(())?;\n    let host = host.trim();\n    if host.is_empty() {\n        return Err(());\n    }\n    let port = port.parse::<u16>().map_err(|_| ())?;\n    Ok((host.to_string(), port))\n}\n"
+      }
+    ]
+  },
+  "validation": {
+    "check": true,
+    "clippy": true,
+    "test": true,
+    "fmt": true,
+    "doc": true,
+    "doctest": true,
+    "notes": "Validated under the current stable toolchain."
+  },
+  "tags": ["parser", "error-handling", "semantic"]
+}
+

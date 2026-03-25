@@ -1,0 +1,52 @@
+{
+  "id": "unsafe.ffi-c-string.0001",
+  "category": "unsafe_ffi_fix",
+  "difficulty": "hard",
+  "edition": "2024",
+  "tier": "core",
+  "source": {
+    "type": "synthetic_mutation",
+    "name": "ffi_boundary_templates",
+    "license_status": "approved",
+    "leakage_risk": "low",
+    "notes": "Draft unsafe and FFI boundary example."
+  },
+  "task": {
+    "instruction": "Repair the FFI helper so it safely converts an input pointer into a Rust string slice.",
+    "constraints": [
+      "Keep the public API unchanged.",
+      "Use a local unsafe block rather than an unsafe fn body without explicit blocks.",
+      "Document the safety assumptions."
+    ],
+    "public_api_locked": true,
+    "minimal_patch_expected": true
+  },
+  "workspace": {
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "use std::ffi::CStr;\nuse std::os::raw::c_char;\n\npub fn from_c_name(name: *const c_char) -> Result<String, std::str::Utf8Error> {\n    let c_str = unsafe { CStr::from_ptr(name) };\n    Ok(c_str.to_str()?.to_string())\n}\n"
+      }
+    ]
+  },
+  "target": {
+    "type": "patch",
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "use std::ffi::CStr;\nuse std::os::raw::c_char;\n\npub fn from_c_name(name: *const c_char) -> Result<String, std::str::Utf8Error> {\n    // SAFETY: The caller must provide a valid non-null pointer to a NUL-terminated C string.\n    // The function reads the string but does not take ownership of the underlying memory.\n    let c_str = unsafe { CStr::from_ptr(name) };\n    Ok(c_str.to_str()?.to_string())\n}\n"
+      }
+    ]
+  },
+  "validation": {
+    "check": false,
+    "clippy": false,
+    "test": false,
+    "fmt": false,
+    "doc": false,
+    "doctest": false,
+    "notes": "Draft unsafe example pending validation and null-pointer behavior review."
+  },
+  "tags": ["unsafe", "ffi", "cstr"]
+}
+

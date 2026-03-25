@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rustforge.local/personal-dataset/example.schema.json",
+  "title": "RustForge Personal Dataset Example",
+  "type": "object",
+  "required": [
+    "id",
+    "category",
+    "difficulty",
+    "edition",
+    "tier",
+    "source",
+    "task",
+    "workspace",
+    "target",
+    "validation",
+    "tags"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9._/-]+$"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "compile_repair",
+        "semantic_impl",
+        "test_driven_bugfix",
+        "clippy_fmt_cleanup",
+        "edition2024_migration",
+        "async_concurrency_fix",
+        "unsafe_ffi_fix",
+        "macro_fix",
+        "api_refactor",
+        "doctest_doc_fix",
+        "rust_qa",
+        "review_preference"
+      ]
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["easy", "medium", "hard", "expert"]
+    },
+    "edition": {
+      "type": "string",
+      "enum": ["2021", "2024"]
+    },
+    "tier": {
+      "type": "string",
+      "enum": ["core", "auxiliary"]
+    },
+    "source": {
+      "type": "object",
+      "required": ["type", "name", "license_status", "leakage_risk"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "internal_suite_seed",
+            "real_patch_dataset",
+            "real_crate_mining",
+            "synthetic_mutation",
+            "failure_harvest",
+            "auxiliary_qa"
+          ]
+        },
+        "name": { "type": "string" },
+        "license_status": {
+          "type": "string",
+          "enum": ["approved", "review_required", "internal_only", "rejected"]
+        },
+        "leakage_risk": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "task": {
+      "type": "object",
+      "required": ["instruction", "constraints", "public_api_locked"],
+      "properties": {
+        "instruction": { "type": "string" },
+        "constraints": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "public_api_locked": { "type": "boolean" },
+        "minimal_patch_expected": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "workspace": {
+      "type": "object",
+      "required": ["files"],
+      "properties": {
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileRecord"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "oracle": {
+      "type": "object",
+      "properties": {
+        "hidden_files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileRecord"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "target": {
+      "type": "object",
+      "required": ["type", "files"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["patch", "full_workspace", "answer_only", "preference_pair"]
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileRecord"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "validation": {
+      "type": "object",
+      "required": ["check", "clippy", "fmt", "doc"],
+      "properties": {
+        "check": { "type": "boolean" },
+        "clippy": { "type": "boolean" },
+        "test": { "type": "boolean" },
+        "fmt": { "type": "boolean" },
+        "doc": { "type": "boolean" },
+        "doctest": { "type": "boolean" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "fileRecord": {
+      "type": "object",
+      "required": ["path", "content"],
+      "properties": {
+        "path": { "type": "string" },
+        "content": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
+

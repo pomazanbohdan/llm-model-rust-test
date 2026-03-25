@@ -1,0 +1,52 @@
+{
+  "id": "compile.repair-push-slug.0001",
+  "category": "compile_repair",
+  "difficulty": "easy",
+  "edition": "2024",
+  "tier": "core",
+  "source": {
+    "type": "synthetic_mutation",
+    "name": "borrow_mutation_generator",
+    "license_status": "approved",
+    "leakage_risk": "low",
+    "notes": "Mutation inserted a mutable borrow conflict into a previously valid function."
+  },
+  "task": {
+    "instruction": "Fix the crate with the smallest reasonable change.",
+    "constraints": [
+      "Keep the public API unchanged.",
+      "Preserve the current behavior.",
+      "Avoid cloning the entire vector."
+    ],
+    "public_api_locked": true,
+    "minimal_patch_expected": true
+  },
+  "workspace": {
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "pub fn push_first_slug(tags: &mut Vec<String>) {\n    let first = tags.first().unwrap_or(&String::from(\"default\"));\n    tags.push(first.to_lowercase());\n}\n"
+      }
+    ]
+  },
+  "target": {
+    "type": "patch",
+    "files": [
+      {
+        "path": "src/lib.rs",
+        "content": "pub fn push_first_slug(tags: &mut Vec<String>) {\n    let first = tags.first().cloned().unwrap_or_else(|| \"default\".to_string());\n    tags.push(first.to_lowercase());\n}\n"
+      }
+    ]
+  },
+  "validation": {
+    "check": true,
+    "clippy": true,
+    "test": false,
+    "fmt": true,
+    "doc": true,
+    "doctest": false,
+    "notes": "Compile-repair example without hidden behavior tests."
+  },
+  "tags": ["borrow-checker", "minimal-patch", "compile"]
+}
+
