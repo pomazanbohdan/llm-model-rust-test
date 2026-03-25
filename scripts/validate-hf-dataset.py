@@ -165,6 +165,7 @@ def main() -> None:
     parser.add_argument("--report-dir", default=DEFAULT_REPORT_DIR)
     parser.add_argument("--limit", type=int, default=0, help="Maximum number of records to validate. 0 means all.")
     parser.add_argument("--max-per-category", type=int, default=0, help="Maximum validations per category. 0 means unlimited.")
+    parser.add_argument("--max-per-family", type=int, default=0, help="Maximum validations per family. 0 means unlimited.")
     parser.add_argument("--start-per-category", type=int, default=0, help="Skip this many records per category before validating.")
     parser.add_argument("--tiers", choices=["all", "core", "auxiliary"], default="all")
     parser.add_argument("--validation-tier", choices=["cheap", "medium", "full"], default="full")
@@ -183,6 +184,7 @@ def main() -> None:
 
     reports: list[dict[str, object]] = []
     per_category: Counter[str] = Counter()
+    per_family: Counter[str] = Counter()
     seen_per_category: Counter[str] = Counter()
     family_filter = {item.strip() for item in args.family_include.split(",") if item.strip()}
 
@@ -199,9 +201,12 @@ def main() -> None:
             continue
         if args.max_per_category and per_category[category] >= args.max_per_category:
             continue
+        if args.max_per_family and per_family[family_id] >= args.max_per_family:
+            continue
         report = validate_record(record, args.timeout_sec, args.validation_tier)
         reports.append(report)
         per_category[category] += 1
+        per_family[family_id] += 1
         if args.limit and len(reports) >= args.limit:
             break
 

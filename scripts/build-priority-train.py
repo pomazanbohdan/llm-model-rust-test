@@ -40,14 +40,22 @@ def iter_records(data_dir: Path):
 
 def load_validation_results(report_path: Path) -> dict[str, dict[str, object]]:
     results: dict[str, dict[str, object]] = {}
-    if not report_path.exists():
+    if report_path.is_file():
+        with report_path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                if not line.strip():
+                    continue
+                item = json.loads(line)
+                results[str(item["id"])] = item
         return results
-    with report_path.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            if not line.strip():
-                continue
-            item = json.loads(line)
-            results[str(item["id"])] = item
+    if report_path.is_dir():
+        for nested in sorted(report_path.rglob("validation-report.jsonl")):
+            with nested.open("r", encoding="utf-8") as handle:
+                for line in handle:
+                    if not line.strip():
+                        continue
+                    item = json.loads(line)
+                    results[str(item["id"])] = item
     return results
 
 
@@ -92,6 +100,8 @@ def main() -> None:
     (output_dir / "data").mkdir(parents=True, exist_ok=True)
 
     validation_results = load_validation_results(report_dir / "validation-report.jsonl")
+    if not validation_results:
+        validation_results = load_validation_results(report_dir)
     family_scores = json.loads((family_score_dir / "family-scores.json").read_text(encoding="utf-8"))["families"]
     stable_families = {
         row["family_id"]

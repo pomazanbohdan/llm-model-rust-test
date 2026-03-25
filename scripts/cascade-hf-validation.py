@@ -91,7 +91,7 @@ def main() -> None:
                     validation_tier,
                     "--family-include",
                     family_id,
-                    "--max-per-category",
+                    "--max-per-family",
                     str(amount),
                     "--timeout-sec",
                     str(args.timeout_sec),

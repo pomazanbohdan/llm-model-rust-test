@@ -24,12 +24,18 @@ def iter_records(data_dir: Path):
 
 def load_jsonl(path: Path) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
-    if not path.exists():
+    if path.is_file():
+        with path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                if line.strip():
+                    rows.append(json.loads(line))
         return rows
-    with path.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            if line.strip():
-                rows.append(json.loads(line))
+    if path.is_dir():
+        for nested in sorted(path.rglob("validation-report.jsonl")):
+            with nested.open("r", encoding="utf-8") as handle:
+                for line in handle:
+                    if line.strip():
+                        rows.append(json.loads(line))
     return rows
 
 
@@ -56,7 +62,7 @@ def main() -> None:
         family_totals[family_id] += 1
         category_by_family[family_id] = str(record["category"])
 
-    validation_rows = load_jsonl(report_dir / "validation-report.jsonl")
+    validation_rows = load_jsonl(report_dir / "validation-report.jsonl") or load_jsonl(report_dir)
     family_stats: dict[str, dict[str, object]] = defaultdict(lambda: {
         "validated": 0,
         "failed": 0,
