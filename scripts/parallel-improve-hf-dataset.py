@@ -100,6 +100,8 @@ def main() -> None:
     parser.add_argument("--timeout-sec", type=int, default=90)
     parser.add_argument("--target-rows", type=int, default=15000)
     parser.add_argument("--aux-share", type=float, default=0.05)
+    parser.add_argument("--category-include", action="append", default=[])
+    parser.add_argument("--family-include", action="append", default=[])
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parent.parent
@@ -115,6 +117,8 @@ def main() -> None:
             derive_family_id(record)
             for record in iter_records(input_dir / "data")
             if str(record.get("tier")) == "core"
+            and (not args.category_include or str(record.get("category")) in set(args.category_include))
+            and (not args.family_include or derive_family_id(record) in set(args.family_include))
         }
     )
 

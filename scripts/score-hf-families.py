@@ -23,20 +23,22 @@ def iter_records(data_dir: Path):
 
 
 def load_jsonl(path: Path) -> list[dict[str, object]]:
-    rows: list[dict[str, object]] = []
+    rows_by_key: dict[tuple[str, str], dict[str, object]] = {}
     if path.is_file():
         with path.open("r", encoding="utf-8") as handle:
             for line in handle:
                 if line.strip():
-                    rows.append(json.loads(line))
-        return rows
+                    row = json.loads(line)
+                    rows_by_key[(str(row.get("id", "")), str(row.get("validation_tier", "")))] = row
+        return list(rows_by_key.values())
     if path.is_dir():
         for nested in sorted(path.rglob("validation-report.jsonl")):
             with nested.open("r", encoding="utf-8") as handle:
                 for line in handle:
                     if line.strip():
-                        rows.append(json.loads(line))
-    return rows
+                        row = json.loads(line)
+                        rows_by_key[(str(row.get("id", "")), str(row.get("validation_tier", "")))] = row
+    return list(rows_by_key.values())
 
 
 def main() -> None:

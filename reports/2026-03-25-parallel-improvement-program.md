@@ -38,6 +38,18 @@ Artifacts:
 - [parallel-summary.json](/C:/project/rust-test/hf-dataset/reports/parallel-improve/parallel-summary.json)
 - [parallel-rows.json](/C:/project/rust-test/hf-dataset/reports/parallel-improve/parallel-rows.json)
 
+Targeted follow-up waves also landed for the highest-value categories:
+
+- `semantic_impl`: `24/24` additional full validations
+- `unsafe_ffi_fix`: `15/15` additional full validations
+- `cargo_workspace_fix`: `12/12` additional full validations
+
+Artifacts:
+
+- [target-depth-semantic](/C:/project/rust-test/hf-dataset/reports/target-depth-semantic)
+- [target-depth-unsafe](/C:/project/rust-test/hf-dataset/reports/target-depth-unsafe)
+- [target-depth-cargo](/C:/project/rust-test/hf-dataset/reports/target-depth-cargo)
+
 ### Track C: Priority Subset Refresh
 
 Status: completed
@@ -52,6 +64,19 @@ Manifest:
 
 - [manifest.json](/C:/project/rust-test/hf-dataset-priority-v3/manifest.json)
 
+An expanded priority subset is now also available:
+
+- [hf-dataset-priority-v4](/C:/project/rust-test/hf-dataset-priority-v4)
+- total rows: `14,995`
+- verified core rows: `342`
+- stable core rows: `13,903`
+- auxiliary rows: `750`
+
+Combined family scoring across all validation artifacts:
+
+- [family-scores-all](/C:/project/rust-test/hf-dataset/reports/family-scores-all)
+- unique validated rows tracked: `438`
+
 ### Track D: Generator Hardening
 
 Status: completed
@@ -63,5 +88,5 @@ Status: completed
 ## Next Best Steps
 
 1. Expand family-depth validation beyond the first `4` rows per family.
-2. Promote `hf-dataset-priority-v3` as the default low-cost training subset.
-3. Increase verified depth on the highest-value semantic, unsafe, and Cargo families.
+2. Promote `hf-dataset-priority-v4` as the default low-cost training subset.
+3. Keep increasing verified depth on `semantic_impl`, `unsafe_ffi_fix`, and `cargo_workspace_fix` before broadening to the remaining core families.

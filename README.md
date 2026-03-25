@@ -83,14 +83,18 @@ Latest verified-expansion milestone:
 Latest optimized train milestone:
 
 - `14,995` rows in `priority_train`
-- `192` verified core rows in `hf-dataset-priority-v3`
-- `14,053` stable-family core rows
+- `342` verified core rows in `hf-dataset-priority-v4`
+- `13,903` stable-family core rows
 - `750` auxiliary rows
 
 Latest parallel depth milestone:
 
 - `48/48` core families pass `cheap`, `medium`, and `full`
 - `96/96` parallel family-depth tasks validated
+- additional targeted waves passed cleanly:
+  - `semantic_impl`: `24/24`
+  - `unsafe_ffi_fix`: `15/15`
+  - `cargo_workspace_fix`: `12/12`
 
 Current dataset QC report:
 
