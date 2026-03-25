@@ -92,8 +92,8 @@ Artifacts:
 Current aggregate quality state:
 
 - [family-scores-all](/C:/project/rust-test/hf-dataset/reports/family-scores-all)
-- `4,420` validated core rows tracked across all validation artifacts
-- `85` validated rows for every one of the `52` core families
+- `9,724` validated core rows tracked across all validation artifacts
+- `187` validated rows for every one of the `52` core families
 - `0` failed rows in the aggregated family score snapshot
 - `52` stable core families at the current threshold
 
@@ -135,12 +135,12 @@ Latest high-confidence subset after the expanded depth program:
 
 Current default high-confidence subset:
 
-- [hf-dataset-priority-v10](/C:/project/rust-test/hf-dataset-priority-v10)
+- [hf-dataset-priority-v11](/C:/project/rust-test/hf-dataset-priority-v11)
 - total rows: `14,995`
-- verified core rows: `4,316`
-- stable core rows: `9,929`
+- verified core rows: `9,328`
+- stable core rows: `4,917`
 - auxiliary rows: `750`
-- threshold used: `85` validated rows per family at `100%` pass rate
+- threshold used: `185` validated rows per family at `100%` pass rate
 
 ### Track D: Generator Hardening
 
@@ -152,7 +152,7 @@ Status: completed
 
 ## Next Best Steps
 
-1. Raise validated depth from `85` to `115+` rows per core family using the same larger-cycle strategy.
-2. Promote [hf-dataset-priority-v10](/C:/project/rust-test/hf-dataset-priority-v10) as the default low-cost training subset.
+1. Raise validated depth from `187` toward the practical uniform ceiling set by the smallest `400`-row families.
+2. Promote [hf-dataset-priority-v11](/C:/project/rust-test/hf-dataset-priority-v11) as the default low-cost training subset.
 3. Keep growing full validation on `semantic_impl`, `unsafe_ffi_fix`, `async_concurrency_fix`, `edition2024_migration`, and `cargo_workspace_fix`.
-4. Refresh the HF dataset card whenever the validated-depth milestone moves materially.
+4. Use capped large-cycle planning, because a literal `+100` repeated five times is not feasible uniformly across all core families.

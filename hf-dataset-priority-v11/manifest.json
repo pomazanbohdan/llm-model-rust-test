@@ -1,0 +1,26 @@
+{
+  "total_rows": 14995,
+  "bucket_counts": {
+    "verified_core": 9328,
+    "stable_core": 4917,
+    "auxiliary_tail": 750
+  },
+  "category_counts": {
+    "api_refactor": 593,
+    "async_concurrency_fix": 1335,
+    "cargo_workspace_fix": 890,
+    "clippy_fmt_cleanup": 742,
+    "compile_repair": 2375,
+    "doctest_doc_fix": 445,
+    "edition2024_migration": 1484,
+    "macro_fix": 742,
+    "semantic_impl": 2375,
+    "test_driven_bugfix": 1929,
+    "unsafe_ffi_fix": 1335,
+    "review_preference": 375,
+    "rust_qa": 375
+  },
+  "source_dataset": "hf-dataset",
+  "min_family_validated": 185,
+  "min_family_pass_rate": 1.0
+}

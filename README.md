@@ -110,17 +110,17 @@ Latest parallel depth milestone:
 
 Latest validated-depth milestone:
 
-- `4,420` validated core rows across the canonical `hf-dataset`
-- `85` validated rows for each of the `52` core families
+- `9,724` validated core rows across the canonical `hf-dataset`
+- `187` validated rows for each of the `52` core families
 - `0` failed rows in the aggregated family score snapshot
 - `52` stable core families at the current threshold
 
 Recommended current training subset:
 
-- [hf-dataset-priority-v10](/C:/project/rust-test/hf-dataset-priority-v10)
+- [hf-dataset-priority-v11](/C:/project/rust-test/hf-dataset-priority-v11)
 - `14,995` rows
-- `4,316` verified core rows
-- `9,929` stable core rows
+- `9,328` verified core rows
+- `4,917` stable core rows
 - `750` auxiliary rows
 
 Current dataset QC report:
