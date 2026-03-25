@@ -119,10 +119,12 @@ Latest parallel depth milestone:
 
 Latest validated-depth milestone:
 
-- `15,028` validated core rows across the canonical `hf-dataset`
-- `289` validated rows for each of the `52` core families
+- `25,280` validated rows across the canonical `hf-dataset`
+- all `13` dataset categories are now at `50%+` ideality coverage
+- `52/52` core families remain stable on execution validation
+- `56/56` total families are now stable after auxiliary schema validation
 - `0` failed rows in the aggregated family score snapshot
-- `52` stable core families at the current threshold
+- category coverage at or above `50%` now includes `semantic_impl`, `compile_repair`, `test_driven_bugfix`, `unsafe_ffi_fix`, `edition2024_migration`, `async_concurrency_fix`, `cargo_workspace_fix`, `clippy_fmt_cleanup`, `macro_fix`, `rust_qa`, and `review_preference`
 
 Recommended current training subset:
 
@@ -139,6 +141,7 @@ Current dataset QC report:
 - [reports/2026-03-25-hf-dataset-quality-iteration-v3.md](/C:/project/rust-test/reports/2026-03-25-hf-dataset-quality-iteration-v3.md)
 - [reports/2026-03-25-hf-dataset-family-cascade-v2.md](/C:/project/rust-test/reports/2026-03-25-hf-dataset-family-cascade-v2.md)
 - [reports/2026-03-25-parallel-improvement-program.md](/C:/project/rust-test/reports/2026-03-25-parallel-improvement-program.md)
+- [reports/2026-03-25-category-coverage-uplift.md](/C:/project/rust-test/reports/2026-03-25-category-coverage-uplift.md)
 
 ## Layout
 

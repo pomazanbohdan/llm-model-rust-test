@@ -109,16 +109,18 @@ Current quality work recorded in the repository includes:
 Current validated-depth milestone:
 
 - `52/52` core families pass `cheap`, `medium`, and `full`
-- `15,028` validated core rows are tracked in the aggregated quality reports
-- each core family currently has `289` validated rows
-- aggregated core validation currently shows `0` failed rows
-- all `52` core families satisfy the current stable-family threshold
+- `25,280` validated rows are tracked across the aggregated quality reports
+- all `13` dataset categories now reach `50%+` coverage
+- core execution families remain stable and auxiliary families now have schema/content validation coverage as well
+- aggregated validation currently shows `0` failed rows
+- all `56` families satisfy the current stable-family threshold under their category-appropriate validation path
 
 Reference reports:
 
 - [2026-03-25 HF dataset QC](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-hf-dataset-qc.md)
 - [2026-03-25 Rust gap analysis](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-rust-gap-analysis.md)
 - [2026-03-25 Parallel improvement program](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-parallel-improvement-program.md)
+- [2026-03-25 Category coverage uplift](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-category-coverage-uplift.md)
 
 ## Category mix
 

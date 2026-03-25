@@ -92,10 +92,12 @@ Artifacts:
 Current aggregate quality state:
 
 - [family-scores-all](/C:/project/rust-test/hf-dataset/reports/family-scores-all)
-- `15,028` validated core rows tracked across all validation artifacts
-- `289` validated rows for every one of the `52` core families
+- `25,280` validated rows tracked across all validation artifacts
+- `52/52` core families remain execution-stable
+- `56/56` total families are now stable after adding auxiliary schema validation
+- every dataset category now reaches `50%+` validated coverage
 - `0` failed rows in the aggregated family score snapshot
-- `52` stable core families at the current threshold
+- targeted uplift reports are stored under [coverage-uplift](/C:/project/rust-test/hf-dataset/reports/coverage-uplift)
 
 ### Track C: Priority Subset Refresh
 
@@ -152,7 +154,7 @@ Status: completed
 
 ## Next Best Steps
 
-1. Raise validated depth from `289` toward the practical uniform ceiling set by the smallest `400`-row families.
-2. Promote [hf-dataset-priority-v12](/C:/project/rust-test/hf-dataset-priority-v12) as the default low-cost training subset.
-3. Keep growing full validation on `semantic_impl`, `unsafe_ffi_fix`, `async_concurrency_fix`, `edition2024_migration`, and `cargo_workspace_fix`.
-4. Use capped large-cycle planning, because the next uniform jumps are bounded by the smallest `400`-row families.
+1. Lift the lowest remaining core-family depth from `289` toward the practical uniform ceiling set by the smallest `400`-row families.
+2. Add a second auxiliary-quality pass with stricter semantic heuristics, so `review_preference` and `rust_qa` move beyond schema-level acceptance.
+3. Refresh the recommended training subset once the minimum family depth rises above the current `289` threshold.
+4. Keep using cheap-bulk plus thin full-tail validation to increase coverage without paying full execution cost for every new row.
