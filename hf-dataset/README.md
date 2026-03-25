@@ -81,6 +81,40 @@ The goal is to train Rust-specialized coding models that perform well on:
 - API refactoring
 - doctest and Cargo workspace maintenance
 
+## Intended Uses
+
+Recommended uses:
+
+- supervised fine-tuning of Rust-oriented coding models
+- continued domain adaptation of general coding models toward Rust 2024
+- curriculum construction for repair, migration, and maintenance-style Rust tasks
+- building smaller high-confidence subsets for lower-cost training
+
+This dataset is especially suited for models that should edit or generate Rust code in a crate or workspace context rather than only answer general programming questions.
+
+## Limitations
+
+- the current release is predominantly synthetic, although it is benchmark-aligned
+- not every row in the 50k corpus is fully execution-validated
+- some quality signals are tracked at the template-family level rather than by exhaustively validating every row
+- the dataset is optimized for modern Rust application and library workflows, not for every possible Rust domain such as embedded, `no_std`, kernel, or GPU-specific development
+
+For stricter training mixes, use the repository tooling to build validated or priority subsets on top of the canonical corpus.
+
+## Quality Snapshot
+
+Current quality work recorded in the repository includes:
+
+- a `50,000` row canonical corpus
+- explicit family-based generation and scoring
+- normalized semantic deduplication
+- tiered validation across `cheap`, `medium`, and `full` execution gates
+- family-level cascade validation for expanded core families
+
+Recent quality iteration report:
+
+- [2026-03-25 HF dataset quality iteration v3](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-hf-dataset-quality-iteration-v3.md)
+
 ## Category mix
 
 | Category | Count |
@@ -102,6 +136,35 @@ The goal is to train Rust-specialized coding models that perform well on:
 ## Unsloth compatibility
 
 Use `messages` as the conversation field. If a UI asks for pairwise mapping, use `prompt` and `completion`.
+
+## Loading in Unsloth
+
+This dataset is structured to work with ChatML-style training flows.
+
+Typical loading path:
+
+1. Load the dataset from Hugging Face.
+2. Use the `messages` column as the chat conversation field.
+3. Keep `prompt` and `completion` only as convenience columns for inspection or alternative trainers.
+
+Example with `datasets`:
+
+```python
+from datasets import load_dataset
+
+dataset = load_dataset(
+    "pomazanbohdan/rustforge-personal-rust-dataset",
+    split="train",
+)
+
+print(dataset.column_names)
+print(dataset[0]["messages"])
+```
+
+If your Unsloth or trainer UI expects an instruction-response mapping instead of chat messages, use:
+
+- input: `prompt`
+- output: `completion`
 
 ## Repository Layout
 
