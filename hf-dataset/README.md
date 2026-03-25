@@ -109,9 +109,10 @@ Current quality work recorded in the repository includes:
 Current validated-depth milestone:
 
 - `52/52` core families pass `cheap`, `medium`, and `full`
-- `1,300` validated core rows are tracked in the aggregated quality reports
-- each core family currently has `25` validated rows
+- `2,756` validated core rows are tracked in the aggregated quality reports
+- each core family currently has `55` validated rows
 - aggregated core validation currently shows `0` failed rows
+- all `52` core families satisfy the current stable-family threshold
 
 Reference reports:
 
@@ -174,10 +175,10 @@ If your Unsloth or trainer UI expects an instruction-response mapping instead of
 
 For lower-cost fine-tuning, the repository currently recommends:
 
-- [`hf-dataset-priority-v8`](https://github.com/pomazanbohdan/llm-model-rust-test/tree/main/hf-dataset-priority-v8)
+- [`hf-dataset-priority-v9`](https://github.com/pomazanbohdan/llm-model-rust-test/tree/main/hf-dataset-priority-v9)
 - total rows: `14,995`
-- verified core rows: `1,196`
-- stable core rows: `13,049`
+- verified core rows: `2,756`
+- stable core rows: `11,489`
 - auxiliary rows: `750`
 
 This subset is built from the canonical corpus plus aggregated family validation results and is the best current starting point for Rust-focused SFT with a tighter token budget.

@@ -694,9 +694,8 @@ def gen_edition(idx: int, tier: str) -> dict[str, object]:
             "use std::sync::OnceLock;\n\n"
             "static CONFIG: OnceLock<String> = OnceLock::new();\n\n"
             f"pub fn config_{name}() -> &'static str {{\n"
-            "    CONFIG\n"
-            f"        .get_or_init(|| \"{name}\".to_string())\n"
-            "        .as_str()\n"
+            f"    let value = CONFIG.get_or_init(|| \"{name}\".to_string());\n"
+            "    value.as_str()\n"
             "}\n"
         )
     return make_record(
