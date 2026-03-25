@@ -10,7 +10,7 @@ from pathlib import Path
 DEFAULT_REPO_ID = "pomazanbohdan/rustforge-personal-rust-dataset"
 DEFAULT_OUTPUT_DIR = "hf-dataset"
 DEFAULT_SOURCE_DIR = "hf-source/batches"
-DATASET_VERSION = "0.4.0"
+DATASET_VERSION = "0.5.0"
 SHARD_SIZE = 5000
 
 MODIFIERS = [
@@ -94,6 +94,7 @@ def base_validation(note: str) -> dict[str, object]:
 def make_record(
     *,
     example_id: str,
+    family_id: str,
     category: str,
     difficulty: str,
     tier: str,
@@ -140,6 +141,7 @@ def make_record(
         "record_format": "chatml_messages",
         "example_state": "synthetic_candidate",
         "id": example_id,
+        "family_id": family_id,
         "category": category,
         "difficulty": difficulty,
         "edition": "2024",
@@ -167,6 +169,7 @@ def make_record(
 def make_text_record(
     *,
     example_id: str,
+    family_id: str,
     category: str,
     difficulty: str,
     tier: str,
@@ -183,6 +186,7 @@ def make_text_record(
         "record_format": "chatml_messages",
         "example_state": "synthetic_candidate",
         "id": example_id,
+        "family_id": family_id,
         "category": category,
         "difficulty": difficulty,
         "edition": "2024",
@@ -218,7 +222,9 @@ def gen_compile_repair(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 1)
     crate_name = f"compile_repair_{name}"
     fallback = f"{pick(MODIFIERS, idx, 2)}-{pick(ENTITIES, idx, 3)}"
-    if idx % 2 == 0:
+    variant = idx % 4
+    if variant == 0:
+        family_id = "compile_repair.push_first_clone"
         workspace = (
             f"pub fn push_first_{name}(items: &mut Vec<String>) {{\n"
             f"    let first = items.first().unwrap_or(&String::from(\"{fallback}\"));\n"
@@ -234,7 +240,8 @@ def gen_compile_repair(idx: int, tier: str) -> dict[str, object]:
             "    items.push(first.to_ascii_lowercase());\n"
             "}\n"
         )
-    else:
+    elif variant == 1:
+        family_id = "compile_repair.normalize_owned"
         workspace = (
             f"pub fn normalize_{name}(input: &str) -> &str {{\n"
             "    let lowered = input.trim().to_ascii_lowercase();\n"
@@ -246,10 +253,38 @@ def gen_compile_repair(idx: int, tier: str) -> dict[str, object]:
             "    input.trim().to_ascii_lowercase()\n"
             "}\n"
         )
+    elif variant == 2:
+        family_id = "compile_repair.join_labels_owned"
+        workspace = (
+            f"pub fn join_{name}_labels(labels: &[String]) -> &str {{\n"
+            "    let joined = labels.join(\",\");\n"
+            "    joined.as_str()\n"
+            "}\n"
+        )
+        target = (
+            f"pub fn join_{name}_labels(labels: &[String]) -> String {{\n"
+            "    labels.join(\",\")\n"
+            "}\n"
+        )
+    else:
+        family_id = "compile_repair.parse_ports_collect"
+        workspace = (
+            f"pub fn parse_{name}_ports(input: &[String]) -> Vec<u16> {{\n"
+            "    input.iter().map(|item| item.parse::<u16>().unwrap()).collect()\n"
+            "}\n"
+        )
+        target = (
+            f"pub fn parse_{name}_ports(\n"
+            "    input: &[String],\n"
+            ") -> Result<Vec<u16>, std::num::ParseIntError> {\n"
+            "    input.iter().map(|item| item.parse::<u16>()).collect()\n"
+            "}\n"
+        )
     return make_record(
         example_id=f"compile_repair.{name}.{idx + 1:06d}",
+        family_id=family_id,
         category="compile_repair",
-        difficulty="easy" if idx % 2 == 0 else "medium",
+        difficulty="easy" if variant == 0 else "medium",
         tier=tier,
         instruction=f"Repair the compile issue in the {name} helper with the smallest correct patch.",
         constraints=["Keep the public API unchanged where possible.", "Target Rust edition 2024.", "Prefer a minimal compile fix."],
@@ -264,8 +299,9 @@ def gen_compile_repair(idx: int, tier: str) -> dict[str, object]:
 def gen_semantic_impl(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 2)
     crate_name = f"semantic_impl_{name}"
-    variant = idx % 4
+    variant = idx % 8
     if variant == 0:
+        family_id = "semantic_impl.directive_parser"
         directive = pick(DIRECTIVES, idx, 1)
         workspace = (
             "#[derive(Debug, PartialEq, Eq)]\n"
@@ -298,6 +334,7 @@ def gen_semantic_impl(idx: int, tier: str) -> dict[str, object]:
             "}\n"
         )
     elif variant == 1:
+        family_id = "semantic_impl.endpoint_parser"
         signature = f"pub fn parse_{name}_endpoint(input: &str) -> Result<(String, u16), ParseEndpointError> {{"
         if len(signature) > 100:
             signature = (
@@ -338,6 +375,7 @@ def gen_semantic_impl(idx: int, tier: str) -> dict[str, object]:
             "}\n"
         )
     elif variant == 2:
+        family_id = "semantic_impl.csv_parser"
         workspace = (
             f"pub fn parse_{name}_csv(input: &str) -> Vec<String> {{\n"
             "    todo!()\n"
@@ -353,7 +391,8 @@ def gen_semantic_impl(idx: int, tier: str) -> dict[str, object]:
             "        .collect()\n"
             "}\n"
         )
-    else:
+    elif variant == 3:
+        family_id = "semantic_impl.pairs_map"
         workspace = (
             "use std::collections::BTreeMap;\n\n"
             f"pub fn parse_{name}_pairs(input: &str) -> BTreeMap<String, String> {{\n"
@@ -377,8 +416,104 @@ def gen_semantic_impl(idx: int, tier: str) -> dict[str, object]:
             "        .collect()\n"
             "}\n"
         )
+    elif variant == 4:
+        family_id = "semantic_impl.bool_flag"
+        workspace = (
+            "#[derive(Debug, PartialEq, Eq)]\n"
+            "pub enum ParseFlagError {\n"
+            "    InvalidValue,\n"
+            "}\n\n"
+            f"pub fn parse_{name}_flag(input: &str) -> Result<bool, ParseFlagError> {{\n"
+            "    todo!()\n"
+            "}\n"
+        )
+        target = (
+            "#[derive(Debug, PartialEq, Eq)]\n"
+            "pub enum ParseFlagError {\n"
+            "    InvalidValue,\n"
+            "}\n\n"
+            f"pub fn parse_{name}_flag(input: &str) -> Result<bool, ParseFlagError> {{\n"
+            "    match input.trim().to_ascii_lowercase().as_str() {\n"
+            "        \"true\" | \"yes\" | \"1\" => Ok(true),\n"
+            "        \"false\" | \"no\" | \"0\" => Ok(false),\n"
+            "        _ => Err(ParseFlagError::InvalidValue),\n"
+            "    }\n"
+            "}\n"
+        )
+    elif variant == 5:
+        family_id = "semantic_impl.duration_seconds"
+        workspace = (
+            "#[derive(Debug, PartialEq, Eq)]\n"
+            "pub enum ParseDurationError {\n"
+            "    InvalidShape,\n"
+            "    InvalidNumber,\n"
+            "}\n\n"
+            f"pub fn parse_{name}_seconds(input: &str) -> Result<u64, ParseDurationError> {{\n"
+            "    todo!()\n"
+            "}\n"
+        )
+        target = (
+            "#[derive(Debug, PartialEq, Eq)]\n"
+            "pub enum ParseDurationError {\n"
+            "    InvalidShape,\n"
+            "    InvalidNumber,\n"
+            "}\n\n"
+            f"pub fn parse_{name}_seconds(input: &str) -> Result<u64, ParseDurationError> {{\n"
+            "    let trimmed = input.trim();\n"
+            "    let value = trimmed\n"
+            "        .strip_suffix('s')\n"
+            "        .ok_or(ParseDurationError::InvalidShape)?;\n"
+            "    value\n"
+            "        .trim()\n"
+            "        .parse::<u64>()\n"
+            "        .map_err(|_| ParseDurationError::InvalidNumber)\n"
+            "}\n"
+        )
+    elif variant == 6:
+        family_id = "semantic_impl.header_map"
+        workspace = (
+            "use std::collections::BTreeMap;\n\n"
+            f"pub fn parse_{name}_headers(input: &str) -> BTreeMap<String, String> {{\n"
+            "    todo!()\n"
+            "}\n"
+        )
+        target = (
+            "use std::collections::BTreeMap;\n\n"
+            f"pub fn parse_{name}_headers(input: &str) -> BTreeMap<String, String> {{\n"
+            "    input\n"
+            "        .lines()\n"
+            "        .filter_map(|line| {\n"
+            "            let (key, value) = line.split_once(':')?;\n"
+            "            let key = key.trim();\n"
+            "            let value = value.trim();\n"
+            "            if key.is_empty() {\n"
+            "                return None;\n"
+            "            }\n"
+            "            Some((key.to_string(), value.to_string()))\n"
+            "        })\n"
+            "        .collect()\n"
+            "}\n"
+        )
+    else:
+        family_id = "semantic_impl.key_list"
+        workspace = (
+            f"pub fn parse_{name}_keys(input: &str) -> Vec<String> {{\n"
+            "    todo!()\n"
+            "}\n"
+        )
+        target = (
+            f"pub fn parse_{name}_keys(input: &str) -> Vec<String> {{\n"
+            "    input\n"
+            "        .split('|')\n"
+            "        .map(str::trim)\n"
+            "        .filter(|item| !item.is_empty())\n"
+            "        .map(|item| item.to_string())\n"
+            "        .collect()\n"
+            "}\n"
+        )
     return make_record(
         example_id=f"semantic_impl.{name}.{idx + 1:06d}",
+        family_id=family_id,
         category="semantic_impl",
         difficulty="medium",
         tier=tier,
@@ -396,7 +531,9 @@ def gen_semantic_impl(idx: int, tier: str) -> dict[str, object]:
 def gen_bugfix(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 3)
     crate_name = f"bugfix_{name}"
-    if idx % 2 == 0:
+    variant = idx % 4
+    if variant == 0:
+        family_id = "test_driven_bugfix.normalize_path"
         workspace = (
             f"pub fn normalize_{name}_path(path: &str) -> String {{\n"
             "    path.replace(\"//\", \"/\").trim_end_matches('/').to_string()\n"
@@ -411,7 +548,8 @@ def gen_bugfix(idx: int, tier: str) -> dict[str, object]:
             "    normalized\n"
             "}\n"
         )
-    else:
+    elif variant == 1:
+        family_id = "test_driven_bugfix.moving_average"
         workspace = (
             f"pub fn moving_average_{name}(values: &[u32], window: usize) -> Vec<u32> {{\n"
             "    if window == 0 {\n"
@@ -434,8 +572,40 @@ def gen_bugfix(idx: int, tier: str) -> dict[str, object]:
             "        .collect()\n"
             "}\n"
         )
+    elif variant == 2:
+        family_id = "test_driven_bugfix.dedup_sorted"
+        workspace = (
+            f"pub fn dedup_{name}_sorted(values: &[u32]) -> Vec<u32> {{\n"
+            "    let mut out = Vec::new();\n"
+            "    for value in values {\n"
+            "        if out.last() != Some(value) {\n"
+            "            out.push(*value);\n"
+            "        }\n"
+            "    }\n"
+            "    out.sort_unstable();\n"
+            "    out\n"
+            "}\n"
+        )
+        target = workspace.replace("    out.sort_unstable();\n", "")
+    else:
+        family_id = "test_driven_bugfix.nonempty_lines"
+        workspace = (
+            f"pub fn nonempty_{name}_lines(input: &str) -> Vec<&str> {{\n"
+            "    input.lines().collect()\n"
+            "}\n"
+        )
+        target = (
+            f"pub fn nonempty_{name}_lines(input: &str) -> Vec<&str> {{\n"
+            "    input\n"
+            "        .lines()\n"
+            "        .map(str::trim)\n"
+            "        .filter(|line| !line.is_empty())\n"
+            "        .collect()\n"
+            "}\n"
+        )
     return make_record(
         example_id=f"test_driven_bugfix.{name}.{idx + 1:06d}",
+        family_id=family_id,
         category="test_driven_bugfix",
         difficulty="medium",
         tier=tier,
@@ -453,17 +623,42 @@ def gen_bugfix(idx: int, tier: str) -> dict[str, object]:
 def gen_edition(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 4)
     crate_name = f"edition2024_{name}"
-    if idx % 3 == 0:
+    variant = idx % 5
+    if variant == 0:
+        family_id = "edition2024_migration.unsafe_env_set"
         workspace = f'pub fn bootstrap_env(value: &str) {{\n    std::env::set_var("APP_{name.upper()}", value);\n}}\n'
         target = f'pub fn bootstrap_env(value: &str) {{\n    // SAFETY: This helper runs during single-threaded process bootstrap.\n    unsafe {{\n        std::env::set_var("APP_{name.upper()}", value);\n    }}\n}}\n'
-    elif idx % 3 == 1:
+    elif variant == 1:
+        family_id = "edition2024_migration.unsafe_extern"
         workspace = f'use std::os::raw::c_char;\n\nextern "C" {{\n    pub fn load_{name}(value: *const c_char) -> i32;\n}}\n'
         target = f'use std::os::raw::c_char;\n\nunsafe extern "C" {{\n    pub fn load_{name}(value: *const c_char) -> i32;\n}}\n'
-    else:
+    elif variant == 2:
+        family_id = "edition2024_migration.unsafe_attribute"
         workspace = f'#[no_mangle]\npub extern "C" fn export_{name}() -> usize {{\n    1\n}}\n'
         target = f'#[unsafe(no_mangle)]\npub extern "C" fn export_{name}() -> usize {{\n    1\n}}\n'
+    elif variant == 3:
+        family_id = "edition2024_migration.unsafe_env_remove"
+        workspace = f'pub fn clear_env() {{\n    std::env::remove_var("APP_{name.upper()}");\n}}\n'
+        target = f'pub fn clear_env() {{\n    // SAFETY: This helper runs during single-threaded process bootstrap.\n    unsafe {{\n        std::env::remove_var("APP_{name.upper()}");\n    }}\n}}\n'
+    else:
+        family_id = "edition2024_migration.unsafe_op_in_unsafe_fn"
+        workspace = (
+            "use std::slice;\n\n"
+            f"pub unsafe fn slice_{name}<'a>(ptr: *const u8, len: usize) -> &'a [u8] {{\n"
+            "    slice::from_raw_parts(ptr, len)\n"
+            "}\n"
+        )
+        target = (
+            "use std::slice;\n\n"
+            "/// # Safety\n"
+            "/// The caller must ensure ptr is valid for reads of len bytes.\n"
+            f"pub unsafe fn slice_{name}<'a>(ptr: *const u8, len: usize) -> &'a [u8] {{\n"
+            "    unsafe { slice::from_raw_parts(ptr, len) }\n"
+            "}\n"
+        )
     return make_record(
         example_id=f"edition2024_migration.{name}.{idx + 1:06d}",
+        family_id=family_id,
         category="edition2024_migration",
         difficulty="hard",
         tier=tier,
@@ -481,7 +676,9 @@ def gen_async(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 5)
     crate_name = f"async_fix_{name}"
     cargo = cargo_toml(crate_name, ['tokio = { version = "1", features = ["sync", "rt", "time"] }'])
-    if idx % 3 == 0:
+    variant = idx % 5
+    if variant == 0:
+        family_id = "async_concurrency_fix.mutex_refresh"
         workspace = (
             "use std::sync::Arc;\nuse tokio::sync::Mutex;\n\n"
             f"pub async fn refresh_{name}(cache: Arc<Mutex<Option<String>>>) -> String {{\n"
@@ -501,7 +698,8 @@ def gen_async(idx: int, tier: str) -> dict[str, object]:
             "    *guard = Some(loaded.clone());\n"
             "    loaded\n}\n\nasync fn load_value() -> String {\n    \"loaded\".to_string()\n}\n"
         )
-    elif idx % 3 == 1:
+    elif variant == 1:
+        family_id = "async_concurrency_fix.channel_collect"
         workspace = (
             "use tokio::sync::mpsc;\n\n"
             f"pub async fn collect_{name}(mut rx: mpsc::Receiver<String>) -> Vec<String> {{\n"
@@ -510,7 +708,8 @@ def gen_async(idx: int, tier: str) -> dict[str, object]:
             "    out\n}\n"
         )
         target = workspace.replace("        break;\n", "")
-    else:
+    elif variant == 2:
+        family_id = "async_concurrency_fix.retry_loop"
         workspace = (
             "use tokio::time::{Duration, sleep};\n\n"
             f"pub async fn retry_{name}(retries: usize) -> usize {{\n"
@@ -519,8 +718,55 @@ def gen_async(idx: int, tier: str) -> dict[str, object]:
             "    attempt\n}\n"
         )
         target = workspace.replace("<= retries", "< retries")
+    elif variant == 3:
+        family_id = "async_concurrency_fix.read_write_lock"
+        cargo = cargo_toml(crate_name, ['tokio = { version = "1", features = ["sync", "rt"] }'])
+        workspace = (
+            "use std::sync::Arc;\nuse tokio::sync::RwLock;\n\n"
+            f"pub async fn bump_{name}(state: Arc<RwLock<u64>>) -> u64 {{\n"
+            "    let read = state.read().await;\n"
+            "    let next = *read + 1;\n"
+            "    let mut write = state.write().await;\n"
+            "    *write = next;\n"
+            "    next\n"
+            "}\n"
+        )
+        target = (
+            "use std::sync::Arc;\nuse tokio::sync::RwLock;\n\n"
+            f"pub async fn bump_{name}(state: Arc<RwLock<u64>>) -> u64 {{\n"
+            "    let next = {\n"
+            "        let read = state.read().await;\n"
+            "        *read + 1\n"
+            "    };\n"
+            "    let mut write = state.write().await;\n"
+            "    *write = next;\n"
+            "    next\n"
+            "}\n"
+        )
+    else:
+        family_id = "async_concurrency_fix.timeout_default"
+        cargo = cargo_toml(crate_name, ['tokio = { version = "1", features = ["time", "rt"] }'])
+        workspace = (
+            "use tokio::time::{timeout, Duration};\n\n"
+            f"pub async fn load_{name}() -> String {{\n"
+            "    let result = timeout(Duration::from_millis(1), async {\n"
+            "        \"ready\".to_string()\n"
+            "    })\n"
+            "    .await;\n"
+            "    result.unwrap()\n"
+            "}\n"
+        )
+        target = (
+            "use tokio::time::{Duration, timeout};\n\n"
+            f"pub async fn load_{name}() -> String {{\n"
+            "    timeout(Duration::from_millis(1), async { \"ready\".to_string() })\n"
+            "        .await\n"
+            "        .unwrap_or_default()\n"
+            "}\n"
+        )
     return make_record(
         example_id=f"async_concurrency_fix.{name}.{idx + 1:06d}",
+        family_id=family_id,
         category="async_concurrency_fix",
         difficulty="hard",
         tier=tier,
@@ -538,7 +784,9 @@ def gen_async(idx: int, tier: str) -> dict[str, object]:
 def gen_unsafe(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 6)
     crate_name = f"unsafe_fix_{name}"
-    if idx % 3 == 0:
+    variant = idx % 5
+    if variant == 0:
+        family_id = "unsafe_ffi_fix.cstr_from_ptr"
         unsafe_signature = f"pub unsafe fn from_{name}(input: *const c_char) -> Result<String, std::str::Utf8Error> {{"
         if len(unsafe_signature) > 100:
             unsafe_signature = (
@@ -559,7 +807,8 @@ def gen_unsafe(idx: int, tier: str) -> dict[str, object]:
             "    let c_str = unsafe { CStr::from_ptr(input) };\n"
             "    Ok(c_str.to_str()?.to_string())\n}\n"
         )
-    elif idx % 3 == 1:
+    elif variant == 1:
+        family_id = "unsafe_ffi_fix.slice_from_raw_parts"
         workspace = (
             "use std::slice;\n\n"
             f"pub unsafe fn bytes_{name}<'a>(ptr: *const u8, len: usize) -> &'a [u8] {{\n"
@@ -571,7 +820,8 @@ def gen_unsafe(idx: int, tier: str) -> dict[str, object]:
             f"pub unsafe fn bytes_{name}<'a>(ptr: *const u8, len: usize) -> &'a [u8] {{\n"
             "    unsafe { slice::from_raw_parts(ptr, len) }\n}\n"
         )
-    else:
+    elif variant == 2:
+        family_id = "unsafe_ffi_fix.maybeuninit_init"
         workspace = (
             "use std::mem::MaybeUninit;\n\n"
             f"pub fn init_{name}() -> usize {{\n"
@@ -584,8 +834,38 @@ def gen_unsafe(idx: int, tier: str) -> dict[str, object]:
             "    let value = MaybeUninit::new(0usize);\n"
             "    unsafe { value.assume_init() }\n}\n"
         )
+    elif variant == 3:
+        family_id = "unsafe_ffi_fix.write_bytes_nonnull"
+        workspace = (
+            "use std::ptr;\n\n"
+            f"pub unsafe fn zero_{name}(ptr: *mut u8, len: usize) {{\n"
+            "    ptr::write_bytes(ptr, 0, len);\n"
+            "}\n"
+        )
+        target = (
+            "use std::ptr;\n\n"
+            "/// # Safety\n/// The caller must pass a valid non-null pointer writable for len bytes.\n"
+            f"pub unsafe fn zero_{name}(ptr: *mut u8, len: usize) {{\n"
+            "    let ptr = std::ptr::NonNull::new(ptr).expect(\"pointer must be non-null\");\n"
+            "    unsafe { ptr::write_bytes(ptr.as_ptr(), 0, len) };\n"
+            "}\n"
+        )
+    else:
+        family_id = "unsafe_ffi_fix.transmute_copy_free"
+        workspace = (
+            "use std::mem;\n\n"
+            f"pub fn to_{name}_bytes(value: u32) -> [u8; 4] {{\n"
+            "    unsafe { mem::transmute(value) }\n"
+            "}\n"
+        )
+        target = (
+            f"pub fn to_{name}_bytes(value: u32) -> [u8; 4] {{\n"
+            "    value.to_ne_bytes()\n"
+            "}\n"
+        )
     return make_record(
         example_id=f"unsafe_ffi_fix.{name}.{idx + 1:06d}",
+        family_id=family_id,
         category="unsafe_ffi_fix",
         difficulty="hard",
         tier=tier,
@@ -602,10 +882,22 @@ def gen_unsafe(idx: int, tier: str) -> dict[str, object]:
 def gen_clippy(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 7)
     crate_name = f"clippy_fix_{name}"
-    workspace = f"pub fn maybe_{name}(input: Option<&str>) -> String {{\n    match input {{\n        Some(value) => value.to_string(),\n        None => String::new(),\n    }}\n}}\n"
-    target = f"pub fn maybe_{name}(input: Option<&str>) -> String {{\n    input.unwrap_or_default().to_string()\n}}\n"
+    variant = idx % 3
+    if variant == 0:
+        family_id = "clippy_fmt_cleanup.unwrap_or_default"
+        workspace = f"pub fn maybe_{name}(input: Option<&str>) -> String {{\n    match input {{\n        Some(value) => value.to_string(),\n        None => String::new(),\n    }}\n}}\n"
+        target = f"pub fn maybe_{name}(input: Option<&str>) -> String {{\n    input.unwrap_or_default().to_string()\n}}\n"
+    elif variant == 1:
+        family_id = "clippy_fmt_cleanup.manual_contains"
+        workspace = f"pub fn has_{name}(items: &[String], needle: &str) -> bool {{\n    items.iter().any(|item| item == &needle.to_string())\n}}\n"
+        target = f"pub fn has_{name}(items: &[String], needle: &str) -> bool {{\n    items.iter().any(|item| item == needle)\n}}\n"
+    else:
+        family_id = "clippy_fmt_cleanup.redundant_closure"
+        workspace = f"pub fn lengths_{name}(items: &[String]) -> Vec<usize> {{\n    items.iter().map(|item| item.len()).collect()\n}}\n"
+        target = f"pub fn lengths_{name}(items: &[String]) -> Vec<usize> {{\n    items.iter().map(String::len).collect()\n}}\n"
     return make_record(
         example_id=f"clippy_fmt_cleanup.{name}.{idx + 1:06d}",
+        family_id=family_id,
         category="clippy_fmt_cleanup",
         difficulty="easy",
         tier=tier,
@@ -622,19 +914,52 @@ def gen_clippy(idx: int, tier: str) -> dict[str, object]:
 def gen_macro(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 8)
     crate_name = f"macro_fix_{name}"
-    workspace = (
-        "#[macro_export]\n"
-        f"macro_rules! {name}_map {{\n"
-        "    ($($key:expr => $value:expr),* $(,)?) => {{\n"
-        "        let mut out = Vec::new();\n"
-        "        $(out.push(($key.to_string(), $value));)*\n"
-        "        out\n"
-        "    }};\n"
-        "}\n"
-    )
-    target = workspace.replace("$($key:expr => $value:expr)", "$($key:expr_2021 => $value:expr)")
+    variant = idx % 3
+    if variant == 0:
+        family_id = "macro_fix.expr_fragment_2021"
+        workspace = (
+            "#[macro_export]\n"
+            f"macro_rules! {name}_map {{\n"
+            "    ($($key:expr => $value:expr),* $(,)?) => {{\n"
+            "        let mut out = Vec::new();\n"
+            "        $(out.push(($key.to_string(), $value));)*\n"
+            "        out\n"
+            "    }};\n"
+            "}\n"
+        )
+        target = workspace.replace("$($key:expr => $value:expr)", "$($key:expr_2021 => $value:expr)")
+    elif variant == 1:
+        family_id = "macro_fix.trailing_comma"
+        workspace = (
+            "#[macro_export]\n"
+            f"macro_rules! {name}_vec {{\n"
+            "    ($($value:expr),*) => {{\n"
+            "        let mut out = Vec::new();\n"
+            "        $(out.push($value);)*\n"
+            "        out\n"
+            "    }};\n"
+            "}\n"
+        )
+        target = workspace.replace("($($value:expr),*)", "($($value:expr),* $(,)?)")
+    else:
+        family_id = "macro_fix.block_capture"
+        workspace = (
+            "#[macro_export]\n"
+            f"macro_rules! {name}_value {{\n"
+            "    ($body:stmt) => {{\n"
+            "        $body\n"
+            "    }};\n"
+            "}\n"
+        )
+        target = (
+            "#[macro_export]\n"
+            f"macro_rules! {name}_value {{\n"
+            "    ($body:block) => {{ $body }};\n"
+            "}\n"
+        )
     return make_record(
         example_id=f"macro_fix.{name}.{idx + 1:06d}",
+        family_id=family_id,
         category="macro_fix",
         difficulty="hard",
         tier=tier,
@@ -651,7 +976,9 @@ def gen_macro(idx: int, tier: str) -> dict[str, object]:
 def gen_api(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 9)
     crate_name = f"api_refactor_{name}"
-    if idx % 2 == 0:
+    variant = idx % 4
+    if variant == 0:
+        family_id = "api_refactor.panic_to_result"
         workspace = f"pub fn parse_{name}_port(input: &str) -> u16 {{\n    input.parse::<u16>().unwrap()\n}}\n"
         target = (
             "#[derive(Debug, PartialEq, Eq)]\n"
@@ -659,12 +986,42 @@ def gen_api(idx: int, tier: str) -> dict[str, object]:
             f"pub fn parse_{name}_port(input: &str) -> Result<u16, ParsePortError> {{\n"
             "    input\n        .parse::<u16>()\n        .map_err(|_| ParsePortError::InvalidPort)\n}\n"
         )
-    else:
+    elif variant == 1:
+        family_id = "api_refactor.builder_pattern"
         builder = title_symbol(name)
         workspace = f"pub struct {builder}Config {{\n    pub limit: usize,\n}}\n\nimpl {builder}Config {{\n    pub fn new(limit: usize) -> Self {{\n        Self {{ limit }}\n    }}\n}}\n"
         target = f"pub struct {builder}Config {{\n    pub limit: usize,\n}}\n\nimpl {builder}Config {{\n    pub fn builder() -> {builder}ConfigBuilder {{\n        {builder}ConfigBuilder {{ limit: None }}\n    }}\n}}\n\npub struct {builder}ConfigBuilder {{\n    limit: Option<usize>,\n}}\n\nimpl {builder}ConfigBuilder {{\n    pub fn limit(mut self, limit: usize) -> Self {{\n        self.limit = Some(limit);\n        self\n    }}\n\n    pub fn build(self) -> {builder}Config {{\n        {builder}Config {{\n            limit: self.limit.unwrap_or(0),\n        }}\n    }}\n}}\n"
+    elif variant == 2:
+        family_id = "api_refactor.option_lookup"
+        workspace = (
+            f"pub fn find_{name}(items: &[String], needle: &str) -> String {{\n"
+            "    items.iter().find(|item| item.as_str() == needle).unwrap().clone()\n"
+            "}\n"
+        )
+        target = (
+            f"pub fn find_{name}(items: &[String], needle: &str) -> Option<String> {{\n"
+            "    items.iter().find(|item| item.as_str() == needle).cloned()\n"
+            "}\n"
+        )
+    else:
+        family_id = "api_refactor.error_enum"
+        workspace = (
+            f"pub fn parse_{name}_limit(input: &str) -> Result<usize, String> {{\n"
+            "    input.parse::<usize>().map_err(|_| \"bad limit\".to_string())\n"
+            "}\n"
+        )
+        target = (
+            "#[derive(Debug, PartialEq, Eq)]\n"
+            "pub enum ParseLimitError {\n    InvalidLimit,\n}\n\n"
+            f"pub fn parse_{name}_limit(input: &str) -> Result<usize, ParseLimitError> {{\n"
+            "    input\n"
+            "        .parse::<usize>()\n"
+            "        .map_err(|_| ParseLimitError::InvalidLimit)\n"
+            "}\n"
+        )
     return make_record(
         example_id=f"api_refactor.{name}.{idx + 1:06d}",
+        family_id=family_id,
         category="api_refactor",
         difficulty="hard",
         tier=tier,
@@ -683,10 +1040,22 @@ def gen_doctest(idx: int, tier: str) -> dict[str, object]:
     crate_name = f"doctest_fix_{name}"
     doc_type = pick(DOC_TYPES, idx)
     color = pick(COLORS, idx, 1)
-    workspace = f"/// Represents a {doc_type}.\n///\n/// ```rust\n/// use {crate_name}::{doc_type};\n/// let value = {doc_type}::new(\"{color}\");\n/// assert_eq!(value.as_str(), \"todo\");\n/// ```\npub struct {doc_type}(String);\n\nimpl {doc_type} {{\n    pub fn new(value: &str) -> Self {{\n        Self(value.to_string())\n    }}\n\n    pub fn as_str(&self) -> &str {{\n        &self.0\n    }}\n}}\n"
-    target = workspace.replace('"todo"', f'"{color}"')
+    variant = idx % 3
+    if variant == 0:
+        family_id = "doctest_doc_fix.crate_qualified_doc_example"
+        workspace = f"/// Represents a {doc_type}.\n///\n/// ```rust\n/// use {crate_name}::{doc_type};\n/// let value = {doc_type}::new(\"{color}\");\n/// assert_eq!(value.as_str(), \"todo\");\n/// ```\npub struct {doc_type}(String);\n\nimpl {doc_type} {{\n    pub fn new(value: &str) -> Self {{\n        Self(value.to_string())\n    }}\n\n    pub fn as_str(&self) -> &str {{\n        &self.0\n    }}\n}}\n"
+        target = workspace.replace('"todo"', f'"{color}"')
+    elif variant == 1:
+        family_id = "doctest_doc_fix.mutable_example"
+        workspace = f"/// Keeps a mutable {doc_type}.\n///\n/// ```rust\n/// let value = {crate_name}::{doc_type}::new(\"{color}\");\n/// value.set(\"blue\");\n/// assert_eq!(value.as_str(), \"blue\");\n/// ```\npub struct {doc_type}(String);\n\nimpl {doc_type} {{\n    pub fn new(value: &str) -> Self {{\n        Self(value.to_string())\n    }}\n\n    pub fn set(&mut self, value: &str) {{\n        self.0 = value.to_string();\n    }}\n\n    pub fn as_str(&self) -> &str {{\n        &self.0\n    }}\n}}\n"
+        target = workspace.replace("let value =", "let mut value =")
+    else:
+        family_id = "doctest_doc_fix.result_example"
+        workspace = f"/// Parses a {doc_type}.\n///\n/// ```rust\n/// let value = {crate_name}::parse(\"7\").unwrap();\n/// assert_eq!(value, 8);\n/// ```\npub fn parse(input: &str) -> Result<u32, std::num::ParseIntError> {{\n    input.parse::<u32>()\n}}\n"
+        target = workspace.replace("assert_eq!(value, 8);", "assert_eq!(value, 7);")
     return make_record(
         example_id=f"doctest_doc_fix.{name}.{idx + 1:06d}",
+        family_id=family_id,
         category="doctest_doc_fix",
         difficulty="medium",
         tier=tier,
@@ -705,7 +1074,9 @@ def gen_workspace(idx: int, tier: str) -> dict[str, object]:
     core_name = f"{name}_core"
     app_name = f"{name}_app"
     root_workspace = "[workspace]\nmembers = [\"crates/core\", \"crates/app\"]\nresolver = \"3\"\n"
-    if idx % 2 == 0:
+    variant = idx % 4
+    if variant == 0:
+        family_id = "cargo_workspace_fix.workspace_dependency_path"
         workspace_files = [
             {"path": "Cargo.toml", "content": root_workspace},
             {"path": "crates/core/Cargo.toml", "content": cargo_toml(core_name)},
@@ -714,7 +1085,8 @@ def gen_workspace(idx: int, tier: str) -> dict[str, object]:
             {"path": "crates/app/src/main.rs", "content": f"fn main() {{\n    println!(\"{{}}\", {core_name}::label());\n}}\n"},
         ]
         target_files = [{"path": "crates/app/Cargo.toml", "content": f"[package]\nname = \"{app_name}\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n[dependencies]\n{core_name} = {{ path = \"../core\" }}\n"}]
-    else:
+    elif variant == 1:
+        family_id = "cargo_workspace_fix.workspace_resolver"
         workspace_files = [
             {"path": "Cargo.toml", "content": "[workspace]\nmembers = [\"crates/core\", \"crates/app\"]\n"},
             {"path": "crates/core/Cargo.toml", "content": cargo_toml(core_name)},
@@ -723,8 +1095,32 @@ def gen_workspace(idx: int, tier: str) -> dict[str, object]:
             {"path": "crates/app/src/main.rs", "content": f"fn main() {{\n    println!(\"{{}}\", {core_name}::normalize());\n}}\n"},
         ]
         target_files = [{"path": "Cargo.toml", "content": root_workspace}]
+    elif variant == 2:
+        family_id = "cargo_workspace_fix.workspace_members"
+        workspace_files = [
+            {"path": "Cargo.toml", "content": "[workspace]\nmembers = [\"crates/core\"]\nresolver = \"3\"\n"},
+            {"path": "crates/core/Cargo.toml", "content": cargo_toml(core_name)},
+            {"path": "crates/core/src/lib.rs", "content": f'pub fn label() -> &' + "'static str" + f' {{\n    "{name}"\n}}\n'},
+            {"path": "crates/app/Cargo.toml", "content": cargo_toml(app_name, [f'{core_name} = {{ path = "../core" }}'])},
+            {"path": "crates/app/src/main.rs", "content": f"fn main() {{\n    println!(\"{{}}\", {core_name}::label());\n}}\n"},
+        ]
+        target_files = [{"path": "Cargo.toml", "content": root_workspace}]
+    else:
+        family_id = "cargo_workspace_fix.workspace_inheritance"
+        workspace_files = [
+            {"path": "Cargo.toml", "content": "[workspace]\nmembers = [\"crates/core\", \"crates/app\"]\nresolver = \"3\"\n\n[workspace.package]\nedition = \"2024\"\n"},
+            {"path": "crates/core/Cargo.toml", "content": "[package]\nname = \"" + core_name + "\"\nversion = \"0.1.0\"\n\n"},
+            {"path": "crates/core/src/lib.rs", "content": f'pub fn scope() -> &' + "'static str" + f' {{\n    "{name}"\n}}\n'},
+            {"path": "crates/app/Cargo.toml", "content": "[package]\nname = \"" + app_name + "\"\nversion = \"0.1.0\"\n\n[dependencies]\n" + core_name + " = { path = \"../core\" }\n"},
+            {"path": "crates/app/src/main.rs", "content": f"fn main() {{\n    println!(\"{{}}\", {core_name}::scope());\n}}\n"},
+        ]
+        target_files = [
+            {"path": "crates/core/Cargo.toml", "content": "[package]\nname = \"" + core_name + "\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n"},
+            {"path": "crates/app/Cargo.toml", "content": "[package]\nname = \"" + app_name + "\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n[dependencies]\n" + core_name + " = { path = \"../core\" }\n"},
+        ]
     return make_record(
         example_id=f"cargo_workspace_fix.{name}.{idx + 1:06d}",
+        family_id=family_id,
         category="cargo_workspace_fix",
         difficulty="hard",
         tier=tier,
@@ -751,6 +1147,7 @@ def gen_rust_qa(idx: int, tier: str) -> dict[str, object]:
         completion = "Holding a lock across an await can increase contention and contribute to deadlocks or starvation. The usual fix is to inspect or copy the needed state, drop the guard, and reacquire only if necessary."
     return make_text_record(
         example_id=f"rust_qa.{name}.{idx + 1:06d}",
+        family_id=f"rust_qa.{['borrow_rules', 'env_2024', 'async_locking'][idx % 3]}",
         category="rust_qa",
         difficulty="easy",
         tier=tier,
@@ -774,6 +1171,7 @@ def gen_review_preference(idx: int, tier: str) -> dict[str, object]:
     completion = "Patch B is better because it avoids panicking on invalid input and models failure explicitly with Result. That makes the API safer and more idiomatic for public Rust parsing code."
     return make_text_record(
         example_id=f"review_preference.{name}.{idx + 1:06d}",
+        family_id="review_preference.parse_port_review",
         category="review_preference",
         difficulty="medium",
         tier=tier,
