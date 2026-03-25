@@ -96,9 +96,31 @@ Latest parallel depth milestone:
   - `async_concurrency_fix.watch_shutdown`
   - `cargo_workspace_fix.workspace_feature_flag`
 - additional targeted waves passed cleanly:
-  - `semantic_impl`: `24/24`
-  - `unsafe_ffi_fix`: `15/15`
-  - `cargo_workspace_fix`: `12/12`
+  - `semantic_impl`: `40/40`
+  - `unsafe_ffi_fix`: `25/25`
+  - `async_concurrency_fix`: `30/30`
+  - `edition2024_migration`: `30/30`
+  - `cargo_workspace_fix`: `25/25`
+  - `compile_repair`: `25/25`
+  - `test_driven_bugfix`: `20/20`
+  - `doctest_doc_fix`: `15/15`
+  - `clippy_fmt_cleanup`: `15/15`
+  - `api_refactor`: `20/20`
+  - `macro_fix`: `15/15`
+
+Latest validated-depth milestone:
+
+- `676` validated core rows across the canonical `hf-dataset`
+- `13` validated rows for each of the `52` core families
+- `0` failed rows in the aggregated family score snapshot
+
+Recommended current training subset:
+
+- [hf-dataset-priority-v7](/C:/project/rust-test/hf-dataset-priority-v7)
+- `14,995` rows
+- `572` verified core rows
+- `13,673` stable core rows
+- `750` auxiliary rows
 
 Current dataset QC report:
 

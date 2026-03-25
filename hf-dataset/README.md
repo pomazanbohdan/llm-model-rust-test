@@ -106,6 +106,13 @@ Current quality work recorded in the repository includes:
 - parallel family-depth validation to grow verified coverage efficiently
 - optimized priority-train builders for lower-cost fine-tuning
 
+Current validated-depth milestone:
+
+- `52/52` core families pass `cheap`, `medium`, and `full`
+- `676` validated core rows are tracked in the aggregated quality reports
+- each core family currently has `13` validated rows
+- aggregated core validation currently shows `0` failed rows
+
 Reference reports:
 
 - [2026-03-25 HF dataset QC](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-hf-dataset-qc.md)
@@ -162,6 +169,18 @@ If your Unsloth or trainer UI expects an instruction-response mapping instead of
 
 - input: `prompt`
 - output: `completion`
+
+## Recommended Low-Cost Training Subset
+
+For lower-cost fine-tuning, the repository currently recommends:
+
+- [`hf-dataset-priority-v7`](https://github.com/pomazanbohdan/llm-model-rust-test/tree/main/hf-dataset-priority-v7)
+- total rows: `14,995`
+- verified core rows: `572`
+- stable core rows: `13,673`
+- auxiliary rows: `750`
+
+This subset is built from the canonical corpus plus aggregated family validation results and is the best current starting point for Rust-focused SFT with a tighter token budget.
 
 ## Repository Layout
 
