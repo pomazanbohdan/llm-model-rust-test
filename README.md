@@ -72,6 +72,7 @@ Dataset pipeline:
 python .\scripts\strengthen-hf-dataset.py --max-per-category 10 --timeout-sec 90
 python .\scripts\expand-hf-verified.py --window-size 10 --windows 10 --timeout-sec 90
 python .\scripts\optimize-hf-train.py --target-rows 15000 --min-family-validated 20 --min-family-pass-rate 1.0 --aux-share 0.05
+python .\scripts\parallel-improve-hf-dataset.py --validation-tier full --window-size 2 --waves 2 --start-offset 1 --workers 4 --timeout-sec 90 --target-rows 15000 --aux-share 0.05
 ```
 
 Latest verified-expansion milestone:
@@ -82,9 +83,14 @@ Latest verified-expansion milestone:
 Latest optimized train milestone:
 
 - `14,995` rows in `priority_train`
-- `1,100` verified core rows
-- `13,145` stable-family core rows
+- `192` verified core rows in `hf-dataset-priority-v3`
+- `14,053` stable-family core rows
 - `750` auxiliary rows
+
+Latest parallel depth milestone:
+
+- `48/48` core families pass `cheap`, `medium`, and `full`
+- `96/96` parallel family-depth tasks validated
 
 Current dataset QC report:
 
@@ -92,6 +98,7 @@ Current dataset QC report:
 - [reports/2026-03-25-rust-gap-analysis.md](/C:/project/rust-test/reports/2026-03-25-rust-gap-analysis.md)
 - [reports/2026-03-25-hf-dataset-quality-iteration-v3.md](/C:/project/rust-test/reports/2026-03-25-hf-dataset-quality-iteration-v3.md)
 - [reports/2026-03-25-hf-dataset-family-cascade-v2.md](/C:/project/rust-test/reports/2026-03-25-hf-dataset-family-cascade-v2.md)
+- [reports/2026-03-25-parallel-improvement-program.md](/C:/project/rust-test/reports/2026-03-25-parallel-improvement-program.md)
 
 ## Layout
 

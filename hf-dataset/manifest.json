@@ -1,6 +1,6 @@
 {
   "dataset_name": "RustForge Personal Rust Dataset",
-  "dataset_version": "0.5.0",
+  "dataset_version": "0.5.1",
   "dataset_repo_id": "pomazanbohdan/rustforge-personal-rust-dataset",
   "train_rows": 50000,
   "record_format": "chatml_messages",

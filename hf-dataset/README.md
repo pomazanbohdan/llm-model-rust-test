@@ -24,7 +24,7 @@ configs:
 
 # RustForge Personal Rust Dataset
 
-Current version: `0.5.0`
+Current version: `0.5.1`
 
 Target Hub repo: `pomazanbohdan/rustforge-personal-rust-dataset`
 
@@ -59,14 +59,8 @@ The dataset generation workflow in the repository follows these stages:
    - `cheap`: `cargo check` + `cargo fmt --check`
    - `medium`: adds `cargo clippy -- -D warnings` and `cargo test --no-run`
    - `full`: adds `cargo doc --no-deps` and `cargo test --doc`
-6. Score template families and build smaller, higher-confidence training mixtures for efficient fine-tuning.
-
-The repository also contains:
-
-- the evaluation suite that inspired the task design
-- validation scripts used to score generated rows
-- family-level quality reports
-- optimized train builders for lower-cost fine-tuning workflows
+6. Run family-first cascade and parallel depth validation to expand verified coverage without exhaustively validating every row.
+7. Build smaller, higher-confidence priority subsets for lower-cost fine-tuning workflows.
 
 ## Design Goal
 
@@ -105,15 +99,18 @@ For stricter training mixes, use the repository tooling to build validated or pr
 
 Current quality work recorded in the repository includes:
 
-- a `50,000` row canonical corpus
-- explicit family-based generation and scoring
+- family-based generation with explicit `family_id`
 - normalized semantic deduplication
 - tiered validation across `cheap`, `medium`, and `full` execution gates
-- family-level cascade validation for expanded core families
+- family-level cascade validation across all expanded core families
+- parallel family-depth validation to grow verified coverage efficiently
+- optimized priority-train builders for lower-cost fine-tuning
 
-Recent quality iteration report:
+Reference reports:
 
-- [2026-03-25 HF dataset quality iteration v3](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-hf-dataset-quality-iteration-v3.md)
+- [2026-03-25 HF dataset QC](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-hf-dataset-qc.md)
+- [2026-03-25 Rust gap analysis](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-rust-gap-analysis.md)
+- [2026-03-25 Parallel improvement program](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-parallel-improvement-program.md)
 
 ## Category mix
 

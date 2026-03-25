@@ -167,6 +167,7 @@ def main() -> None:
     parser.add_argument("--max-per-category", type=int, default=0, help="Maximum validations per category. 0 means unlimited.")
     parser.add_argument("--max-per-family", type=int, default=0, help="Maximum validations per family. 0 means unlimited.")
     parser.add_argument("--start-per-category", type=int, default=0, help="Skip this many records per category before validating.")
+    parser.add_argument("--start-per-family", type=int, default=0, help="Skip this many records per family before validating.")
     parser.add_argument("--tiers", choices=["all", "core", "auxiliary"], default="all")
     parser.add_argument("--validation-tier", choices=["cheap", "medium", "full"], default="full")
     parser.add_argument("--family-include", default="", help="Comma-separated family ids to keep. Empty means all.")
@@ -186,6 +187,7 @@ def main() -> None:
     per_category: Counter[str] = Counter()
     per_family: Counter[str] = Counter()
     seen_per_category: Counter[str] = Counter()
+    seen_per_family: Counter[str] = Counter()
     family_filter = {item.strip() for item in args.family_include.split(",") if item.strip()}
 
     for _shard_name, _line_number, record in iter_records(data_dir):
@@ -199,6 +201,9 @@ def main() -> None:
         if seen_per_category[category] < args.start_per_category:
             seen_per_category[category] += 1
             continue
+        if seen_per_family[family_id] < args.start_per_family:
+            seen_per_family[family_id] += 1
+            continue
         if args.max_per_category and per_category[category] >= args.max_per_category:
             continue
         if args.max_per_family and per_family[family_id] >= args.max_per_family:
@@ -207,6 +212,7 @@ def main() -> None:
         reports.append(report)
         per_category[category] += 1
         per_family[family_id] += 1
+        seen_per_family[family_id] += 1
         if args.limit and len(reports) >= args.limit:
             break
 
