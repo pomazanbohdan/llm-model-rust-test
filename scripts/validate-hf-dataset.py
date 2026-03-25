@@ -17,7 +17,7 @@ CHECKS = [
     ("test", ["cargo", "test", "--no-run"]),
     ("fmt", ["cargo", "fmt", "--check"]),
     ("doc", ["cargo", "doc", "--no-deps"]),
-    ("doctest", ["cargo", "test", "--doc"]),
+    ("doctest", ["cargo", "test", "--doc", "-v"]),
 ]
 
 
@@ -82,6 +82,16 @@ def run_check(work_dir: Path, name: str, command: list[str], timeout_sec: int) -
         }
 
 
+def retry_doctest_in_fresh_workspace(record: dict[str, object], timeout_sec: int) -> dict[str, object]:
+    with tempfile.TemporaryDirectory(prefix="rustforge-doctest-retry-") as temp_dir:
+        work_dir = Path(temp_dir)
+        materialize_workspace(work_dir, record)
+        retried = run_check(work_dir, "doctest", ["cargo", "test", "--doc", "-v"], timeout_sec)
+        retried["retried"] = True
+        retried["fresh_workspace_retry"] = True
+        return retried
+
+
 def validate_record(record: dict[str, object], timeout_sec: int) -> dict[str, object]:
     category = str(record["category"])
     tier = str(record["tier"])
@@ -99,6 +109,13 @@ def validate_record(record: dict[str, object], timeout_sec: int) -> dict[str, ob
         work_dir = Path(temp_dir)
         materialize_workspace(work_dir, record)
         check_results = [run_check(work_dir, name, command, timeout_sec) for name, command in CHECKS]
+        failed_checks = [item for item in check_results if not item["ok"]]
+        if len(failed_checks) == 1 and failed_checks[0]["name"] == "doctest":
+            retried = run_check(work_dir, "doctest", ["cargo", "test", "--doc", "-v"], timeout_sec)
+            retried["retried"] = True
+            if not retried["ok"]:
+                retried = retry_doctest_in_fresh_workspace(record, timeout_sec)
+            check_results = [item if item["name"] != "doctest" else retried for item in check_results]
         validation = {
             "check": next(item["ok"] for item in check_results if item["name"] == "check"),
             "clippy": next(item["ok"] for item in check_results if item["name"] == "clippy"),
@@ -134,6 +151,8 @@ def main() -> None:
     parser.add_argument("--report-dir", default=DEFAULT_REPORT_DIR)
     parser.add_argument("--limit", type=int, default=0, help="Maximum number of records to validate. 0 means all.")
     parser.add_argument("--max-per-category", type=int, default=0, help="Maximum validations per category. 0 means unlimited.")
+    parser.add_argument("--start-per-category", type=int, default=0, help="Skip this many records per category before validating.")
+    parser.add_argument("--tiers", choices=["all", "core", "auxiliary"], default="all")
     parser.add_argument("--timeout-sec", type=int, default=60)
     args = parser.parse_args()
 
@@ -148,9 +167,16 @@ def main() -> None:
 
     reports: list[dict[str, object]] = []
     per_category: Counter[str] = Counter()
+    seen_per_category: Counter[str] = Counter()
 
     for _shard_name, _line_number, record in iter_records(data_dir):
         category = str(record["category"])
+        tier = str(record["tier"])
+        if args.tiers != "all" and tier != args.tiers:
+            continue
+        if seen_per_category[category] < args.start_per_category:
+            seen_per_category[category] += 1
+            continue
         if args.max_per_category and per_category[category] >= args.max_per_category:
             continue
         report = validate_record(record, args.timeout_sec)

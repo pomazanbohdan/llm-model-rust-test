@@ -62,9 +62,19 @@ Source: [manifest.json](/C:/project/rust-test/hf-dataset-verified/manifest.json)
 - verified rows promoted: `110`
 - output package: [hf-dataset-verified](/C:/project/rust-test/hf-dataset-verified)
 
+## Expanded verified subset
+
+Source: `hf-dataset/reports/validation-expanded/validation-summary.json`
+
+- rolling windows: `5`
+- window size: `10` per core category
+- validated core rows across rolling windows: `550 / 550`
+- expanded verified subset rows: `550`
+- per-core-category verified rows: `50`
+
 ## Next actions
 
 1. keep reducing duplicate pressure, especially inside the large core families
-2. expand validation from sampled rows to wider rolling batches per category
-3. expand the verified subset from hundreds to thousands of rows
+2. expand rolling validation beyond the first `50` rows per core category
+3. expand the verified subset from `550` into the `1000+` range
 4. keep adding real benchmark-failure-driven examples on top of the synthetic base

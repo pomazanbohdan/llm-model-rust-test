@@ -539,16 +539,23 @@ def gen_unsafe(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 6)
     crate_name = f"unsafe_fix_{name}"
     if idx % 3 == 0:
+        unsafe_signature = f"pub unsafe fn from_{name}(input: *const c_char) -> Result<String, std::str::Utf8Error> {{"
+        if len(unsafe_signature) > 100:
+            unsafe_signature = (
+                f"pub unsafe fn from_{name}(\n"
+                "    input: *const c_char,\n"
+                ") -> Result<String, std::str::Utf8Error> {"
+            )
         workspace = (
             "use std::ffi::CStr;\nuse std::os::raw::c_char;\n\n"
-            f"pub unsafe fn from_{name}(input: *const c_char) -> Result<String, std::str::Utf8Error> {{\n"
+            f"{unsafe_signature}\n"
             "    let c_str = CStr::from_ptr(input);\n"
             "    Ok(c_str.to_str()?.to_string())\n}\n"
         )
         target = (
             "use std::ffi::CStr;\nuse std::os::raw::c_char;\n\n"
             "/// # Safety\n/// The caller must pass a valid non-null pointer to a NUL-terminated C string.\n"
-            f"pub unsafe fn from_{name}(input: *const c_char) -> Result<String, std::str::Utf8Error> {{\n"
+            f"{unsafe_signature}\n"
             "    let c_str = unsafe { CStr::from_ptr(input) };\n"
             "    Ok(c_str.to_str()?.to_string())\n}\n"
         )

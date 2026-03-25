@@ -70,7 +70,13 @@ Dataset pipeline:
 
 ```powershell
 python .\scripts\strengthen-hf-dataset.py --max-per-category 10 --timeout-sec 90
+python .\scripts\expand-hf-verified.py --window-size 10 --windows 5 --timeout-sec 90
 ```
+
+Latest verified-expansion milestone:
+
+- `550` verified core rows
+- `50` validated rows per core category across the first five rolling windows
 
 Current dataset QC report:
 
