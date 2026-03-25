@@ -59,10 +59,25 @@ It also includes a unified Hugging Face export pipeline:
 
 The final export is designed as one unified SFT dataset:
 
-- one `train.jsonl` file
+- one unified `train` split stored as sharded `train-*.jsonl`
 - ChatML-style `messages` rows for direct use in Unsloth
 - `prompt` and `completion` convenience columns
 - Rust task metadata and provenance kept in the same record
+
+The current large HF-first build is now sharded as `train-*.jsonl` and generated from editable batch manifests under [hf-source](/C:/project/rust-test/hf-source).
+
+Dataset pipeline:
+
+```powershell
+python .\scripts\generate-hf-rustforge-50k.py
+python .\scripts\dedup-hf-dataset.py
+python .\scripts\validate-hf-dataset.py --max-per-category 1
+python .\scripts\promote-hf-verified.py
+```
+
+Current dataset QC report:
+
+- [reports/2026-03-25-hf-dataset-qc.md](/C:/project/rust-test/reports/2026-03-25-hf-dataset-qc.md)
 
 ## Layout
 

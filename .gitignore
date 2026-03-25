@@ -4,3 +4,6 @@ model-workspaces/
 **/.nanocoder/
 model-box/results/
 model-box/workspace/
+hf-dataset/data/train-*.jsonl
+hf-dataset/reports/
+hf-dataset-verified/

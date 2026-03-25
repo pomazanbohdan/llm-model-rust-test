@@ -1,7 +1,8 @@
 param(
     [Parameter(Mandatory = $true)]
     [string]$RepoId,
-    [string]$LocalDir = "hf-dataset"
+    [string]$LocalDir = "hf-dataset",
+    [string[]]$DeletePatterns = @()
 )
 
 $ErrorActionPreference = "Stop"
@@ -13,15 +14,20 @@ if (-not (Test-Path $ResolvedLocalDir)) {
     throw "Local dataset directory not found: $ResolvedLocalDir"
 }
 
+$DeleteArgs = @()
+foreach ($Pattern in $DeletePatterns) {
+    $DeleteArgs += @("--delete", $Pattern)
+}
+
 $HfCommand = Get-Command hf -ErrorAction SilentlyContinue
 if ($HfCommand) {
-    & $HfCommand.Source upload $RepoId $ResolvedLocalDir . --repo-type dataset
+    & $HfCommand.Source upload $RepoId $ResolvedLocalDir . --repo-type dataset @DeleteArgs
     exit $LASTEXITCODE
 }
 
 $LegacyCommand = Get-Command huggingface-cli -ErrorAction SilentlyContinue
 if ($LegacyCommand) {
-    & $LegacyCommand.Source upload $RepoId $ResolvedLocalDir . --repo-type dataset
+    & $LegacyCommand.Source upload $RepoId $ResolvedLocalDir . --repo-type dataset @DeleteArgs
     exit $LASTEXITCODE
 }
 

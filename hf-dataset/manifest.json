@@ -1,12 +1,25 @@
 {
   "dataset_name": "RustForge Personal Rust Dataset",
-  "dataset_version": "0.2.0",
-  "generated_at": "2026-03-25T08:48:54",
-  "source_dir": "personal-dataset\\\\train\\\\seed",
-  "output_dir": "hf-dataset",
+  "dataset_version": "0.3.0",
   "dataset_repo_id": "pomazanbohdan/rustforge-personal-rust-dataset",
-  "train_rows": 8,
+  "train_rows": 50000,
   "record_format": "chatml_messages",
   "unsloth_compatible": true,
-  "notes": "Unified Hugging Face export built from draft seed candidates in ChatML-compatible messages format."
+  "shard_size": 5000,
+  "shard_count": 10,
+  "category_counts": {
+    "rust_qa": 1500,
+    "review_preference": 1000,
+    "compile_repair": 9000,
+    "semantic_impl": 9000,
+    "test_driven_bugfix": 7000,
+    "edition2024_migration": 5000,
+    "async_concurrency_fix": 5000,
+    "unsafe_ffi_fix": 5000,
+    "clippy_fmt_cleanup": 2500,
+    "macro_fix": 2500,
+    "api_refactor": 1500,
+    "doctest_doc_fix": 1000
+  },
+  "notes": "50k synthetic HF-first corpus generated from source batch manifests."
 }
