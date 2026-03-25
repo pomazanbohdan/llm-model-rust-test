@@ -69,10 +69,7 @@ The current large HF-first build is now sharded as `train-*.jsonl` and generated
 Dataset pipeline:
 
 ```powershell
-python .\scripts\generate-hf-rustforge-50k.py
-python .\scripts\dedup-hf-dataset.py
-python .\scripts\validate-hf-dataset.py --max-per-category 1
-python .\scripts\promote-hf-verified.py
+python .\scripts\strengthen-hf-dataset.py --max-per-category 10 --timeout-sec 90
 ```
 
 Current dataset QC report:

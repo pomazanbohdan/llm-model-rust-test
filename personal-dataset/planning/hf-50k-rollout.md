@@ -14,7 +14,7 @@ This rollout defines the first large Hugging Face publication target for the Rus
 
 | Category | Count |
 | --- | ---: |
-| compile_repair | 9,000 |
+| compile_repair | 8,000 |
 | semantic_impl | 8,000 |
 | test_driven_bugfix | 6,500 |
 | edition2024_migration | 5,000 |

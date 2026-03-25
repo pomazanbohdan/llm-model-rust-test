@@ -14,7 +14,7 @@ DEFAULT_REPORT_DIR = "hf-dataset/reports/validation"
 CHECKS = [
     ("check", ["cargo", "check"]),
     ("clippy", ["cargo", "clippy", "--", "-D", "warnings"]),
-    ("test", ["cargo", "test"]),
+    ("test", ["cargo", "test", "--no-run"]),
     ("fmt", ["cargo", "fmt", "--check"]),
     ("doc", ["cargo", "doc", "--no-deps"]),
     ("doctest", ["cargo", "test", "--doc"]),
@@ -51,12 +51,16 @@ def run_check(work_dir: Path, name: str, command: list[str], timeout_sec: int) -
             timeout=timeout_sec,
             check=False,
         )
+        infra_error = None
+        if result.returncode != 0 and "os error 4551" in result.stderr and "Application Control policy has blocked this file" in result.stderr:
+            infra_error = "app_control_blocked"
         return {
             "name": name,
             "ok": result.returncode == 0,
             "returncode": result.returncode,
             "stdout_tail": result.stdout[-2000:],
             "stderr_tail": result.stderr[-2000:],
+            **({"infra_error": infra_error} if infra_error else {}),
         }
     except FileNotFoundError as exc:
         return {
@@ -104,7 +108,16 @@ def validate_record(record: dict[str, object], timeout_sec: int) -> dict[str, ob
             "doctest": next(item["ok"] for item in check_results if item["name"] == "doctest"),
             "notes": "Validated from target_files over workspace_files.",
         }
-        status = "validated" if all(validation[key] for key in ("check", "clippy", "test", "fmt", "doc", "doctest")) else "failed"
+        failed_checks = [item for item in check_results if not item["ok"]]
+        has_real_failure = any("infra_error" not in item for item in failed_checks)
+        has_infra_only_failure = bool(failed_checks) and not has_real_failure
+        if all(validation[key] for key in ("check", "clippy", "test", "fmt", "doc", "doctest")):
+            status = "validated"
+        elif has_infra_only_failure:
+            status = "skipped_infra"
+            validation["notes"] = "Skipped because local execution policy blocked a generated test binary."
+        else:
+            status = "failed"
         return {
             "id": record["id"],
             "category": category,

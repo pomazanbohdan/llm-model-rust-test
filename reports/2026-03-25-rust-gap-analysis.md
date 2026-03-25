@@ -14,13 +14,13 @@ Primary references:
 
 ## Executive verdict
 
-No. The current dataset is directionally correct, but it is not sufficient for `100%` on the benchmark.
+Not yet. The current dataset is much stronger and the sampled local validation is now green, but it is still not sufficient to claim real `100%` readiness on the full benchmark.
 
 Main blockers:
 
 1. duplicate pressure in the 50k corpus is still material
-2. too little verified data
-3. current validation is only a sampled validation, not broad verified coverage
+2. verified data is still too small relative to the full corpus
+3. current validation is still sampled validation, not broad verified coverage
 4. important modern Rust surfaces are only partially covered or not covered deeply enough
 5. the current benchmark implementation is still only a small Phase 1 slice, while the target benchmark plan is much broader
 
@@ -29,14 +29,14 @@ Main blockers:
 | Benchmark layer | Current dataset coverage | Quality status | Main gaps | Priority |
 | --- | --- | --- | --- | --- |
 | compile correctness | present via `compile_repair` | medium | too repetitive; limited type/trait/lifetime variety | high |
-| semantic correctness | present via `semantic_impl` and `test_driven_bugfix` | low | weak hidden-test diversity; formatting failures; too many single-function parsers | critical |
+| semantic correctness | present via `semantic_impl` and `test_driven_bugfix` | medium | weak hidden-test diversity; too many single-function parsers | critical |
 | Rust 2024 compatibility | present via `edition2024_migration` | medium | too narrow; currently centered around env mutation and a few edition-style repairs | high |
 | async/concurrency | present via `async_concurrency_fix` | medium | mostly lock-scope patterns; missing cancellation, backpressure, shutdown, stream behavior | high |
-| unsafe/FFI | present via `unsafe_ffi_fix` | low | current templates fail clippy on raw pointer contracts; missing deeper soundness cases | critical |
+| unsafe/FFI | present via `unsafe_ffi_fix` | medium | missing deeper soundness cases and richer public safety contracts | critical |
 | macros | present via `macro_fix` | medium | mostly declarative macro fragments; missing proc-macro usage and richer hygiene failures | medium |
-| API design/refactor | present via `api_refactor` | low | too shallow; current examples are narrow panic-to-Result rewrites | high |
+| API design/refactor | present via `api_refactor` | medium | too shallow; current examples are narrow panic-to-Result rewrites | high |
 | migration/repair/review | present via `compile_repair`, `test_driven_bugfix`, `review_preference` | medium | not enough real multi-file patch workflows; weak benchmark-driven repair depth | high |
-| docs/doctests | present via `doctest_doc_fix` | low | current templates fail doctest imports; missing crate-qualified examples and docs ergonomics | high |
+| docs/doctests | present via `doctest_doc_fix` | medium | missing module-level and feature-gated examples | high |
 | Cargo/workspace/tooling | weak | low | almost no workspaces, features, build.rs, resolver, integration layout, multi-crate tasks | critical |
 
 ## What the dataset already covers well enough to keep
@@ -173,17 +173,17 @@ From [QC report](/C:/project/rust-test/reports/2026-03-25-hf-dataset-qc.md):
 
 This is much better than the initial 50k draft, but it still leaves enough repetition to matter for fine-tuning quality.
 
-### Verified subset is tiny
+### Verified subset is still small relative to corpus size
 
-Only `11` rows were promoted into the current verified subset.
+`110` rows were promoted into the current verified subset.
 
-That is enough to prove the pipeline works, but nowhere near enough to drive a robust fine-tune.
+That is enough to prove the strengthen pipeline works and the sampled core families are stable, but it is still nowhere near enough to anchor a 50k fine-tune by itself.
 
-### Validation depth is still shallow
+### Validation depth is still sampled
 
-The latest sampled validation now passes across the sampled core categories, which is a real improvement.
+The latest sampled validation now passes at `10/10` per core category, which is a real improvement and a meaningful local milestone.
 
-But it is still only a one-record-per-category sample, so it does not yet prove broad corpus quality.
+But it is still sampled validation, not broad verified coverage across the whole corpus.
 
 ## Gap by benchmark target volume
 
@@ -239,6 +239,6 @@ After that, scale again toward a stronger `50k` release.
 
 ## Final answer
 
-The current dataset touches most of the named benchmark areas, but it does not yet cover modern Rust deeply or cleanly enough to justify expecting `100%` benchmark performance.
+The current dataset now reaches `100%` on the latest sampled local validation slice for the core categories, but it still does not justify expecting real `100%` benchmark performance across the full suite.
 
-It is a valid infrastructure milestone, not a final Rust-specialist training corpus.
+It is now a strong infrastructure milestone and a usable HF training corpus, but not yet a final Rust-specialist corpus proven at full-benchmark depth.

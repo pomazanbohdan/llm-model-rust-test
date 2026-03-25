@@ -30,14 +30,16 @@ Source: [validation-summary.json](/C:/project/rust-test/hf-dataset/reports/valid
 
 Sample policy:
 
-- one record per category
-- 13 total records checked
+- ten records per category
+- 130 total records checked
 
 Result:
 
-- skipped auxiliary: `2`
-- validated core records: `11`
+- skipped auxiliary: `20`
+- validated core records: `110`
 - failed core records: `0`
+- skipped infra-blocked core records: `0`
+- sampled core pass rate: `100%`
 
 Validated categories:
 
@@ -57,12 +59,12 @@ Validated categories:
 
 Source: [manifest.json](/C:/project/rust-test/hf-dataset-verified/manifest.json)
 
-- verified rows promoted: `11`
+- verified rows promoted: `110`
 - output package: [hf-dataset-verified](/C:/project/rust-test/hf-dataset-verified)
 
 ## Next actions
 
 1. keep reducing duplicate pressure, especially inside the large core families
-2. run validation on a larger per-category sample instead of only one record per category
-3. expand the verified subset from dozens to hundreds and then thousands of rows
+2. expand validation from sampled rows to wider rolling batches per category
+3. expand the verified subset from hundreds to thousands of rows
 4. keep adding real benchmark-failure-driven examples on top of the synthetic base

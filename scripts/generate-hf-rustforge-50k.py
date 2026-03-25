@@ -298,20 +298,42 @@ def gen_semantic_impl(idx: int, tier: str) -> dict[str, object]:
             "}\n"
         )
     elif variant == 1:
+        signature = f"pub fn parse_{name}_endpoint(input: &str) -> Result<(String, u16), ParseEndpointError> {{"
+        if len(signature) > 100:
+            signature = (
+                f"pub fn parse_{name}_endpoint(\n"
+                "    input: &str,\n"
+                ") -> Result<(String, u16), ParseEndpointError> {"
+            )
         workspace = (
-            f"pub fn parse_{name}_endpoint(input: &str) -> Result<(String, u16), ()> {{\n"
+            "#[derive(Debug, PartialEq, Eq)]\n"
+            "pub enum ParseEndpointError {\n"
+            "    InvalidShape,\n"
+            "    InvalidPort,\n"
+            "}\n\n"
+            f"{signature}\n"
             "    todo!()\n"
             "}\n"
         )
         target = (
-            f"pub fn parse_{name}_endpoint(input: &str) -> Result<(String, u16), ()> {{\n"
+            "#[derive(Debug, PartialEq, Eq)]\n"
+            "pub enum ParseEndpointError {\n"
+            "    InvalidShape,\n"
+            "    InvalidPort,\n"
+            "}\n\n"
+            f"{signature}\n"
             "    let trimmed = input.trim();\n"
-            "    let (host, port) = trimmed.split_once(':').ok_or(())?;\n"
+            "    let (host, port) = trimmed\n"
+            "        .split_once(':')\n"
+            "        .ok_or(ParseEndpointError::InvalidShape)?;\n"
             "    let host = host.trim();\n"
             "    if host.is_empty() {\n"
-            "        return Err(());\n"
+            "        return Err(ParseEndpointError::InvalidShape);\n"
             "    }\n"
-            "    let port = port.trim().parse::<u16>().map_err(|_| ())?;\n"
+            "    let port = port\n"
+            "        .trim()\n"
+            "        .parse::<u16>()\n"
+            "        .map_err(|_| ParseEndpointError::InvalidPort)?;\n"
             "    Ok((host.to_string(), port))\n"
             "}\n"
         )
@@ -490,7 +512,7 @@ def gen_async(idx: int, tier: str) -> dict[str, object]:
         target = workspace.replace("        break;\n", "")
     else:
         workspace = (
-            "use tokio::time::{sleep, Duration};\n\n"
+            "use tokio::time::{Duration, sleep};\n\n"
             f"pub async fn retry_{name}(retries: usize) -> usize {{\n"
             "    let mut attempt = 0;\n"
             "    while attempt <= retries {\n        attempt += 1;\n        sleep(Duration::from_millis(1)).await;\n    }\n"
