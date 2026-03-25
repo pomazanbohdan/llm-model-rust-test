@@ -78,6 +78,7 @@ python .\scripts\promote-hf-verified.py
 Current dataset QC report:
 
 - [reports/2026-03-25-hf-dataset-qc.md](/C:/project/rust-test/reports/2026-03-25-hf-dataset-qc.md)
+- [reports/2026-03-25-rust-gap-analysis.md](/C:/project/rust-test/reports/2026-03-25-rust-gap-analysis.md)
 
 ## Layout
 

@@ -2,7 +2,7 @@
   "dataset_version": "0.3.0",
   "description": "Auxiliary Rust-specific mix for the HF-first 50k build.",
   "categories": [
-    { "category": "rust_qa", "count": 1500, "tier": "auxiliary", "generator": "rust_qa" },
+    { "category": "rust_qa", "count": 1000, "tier": "auxiliary", "generator": "rust_qa" },
     { "category": "review_preference", "count": 1000, "tier": "auxiliary", "generator": "review_preference" }
   ]
 }

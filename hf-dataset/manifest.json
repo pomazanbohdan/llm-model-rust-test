@@ -1,6 +1,6 @@
 {
   "dataset_name": "RustForge Personal Rust Dataset",
-  "dataset_version": "0.3.0",
+  "dataset_version": "0.4.0",
   "dataset_repo_id": "pomazanbohdan/rustforge-personal-rust-dataset",
   "train_rows": 50000,
   "record_format": "chatml_messages",
@@ -8,18 +8,19 @@
   "shard_size": 5000,
   "shard_count": 10,
   "category_counts": {
-    "rust_qa": 1500,
+    "rust_qa": 1000,
     "review_preference": 1000,
-    "compile_repair": 9000,
-    "semantic_impl": 9000,
-    "test_driven_bugfix": 7000,
+    "compile_repair": 8000,
+    "semantic_impl": 8000,
+    "test_driven_bugfix": 6500,
     "edition2024_migration": 5000,
-    "async_concurrency_fix": 5000,
-    "unsafe_ffi_fix": 5000,
+    "async_concurrency_fix": 4500,
+    "unsafe_ffi_fix": 4500,
     "clippy_fmt_cleanup": 2500,
     "macro_fix": 2500,
-    "api_refactor": 1500,
-    "doctest_doc_fix": 1000
+    "api_refactor": 2000,
+    "doctest_doc_fix": 1500,
+    "cargo_workspace_fix": 3000
   },
-  "notes": "50k synthetic HF-first corpus generated from source batch manifests."
+  "notes": "HF-first synthetic Rust corpus generated from batch manifests with expanded diversity and workspace coverage."
 }

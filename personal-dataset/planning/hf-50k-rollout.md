@@ -15,16 +15,17 @@ This rollout defines the first large Hugging Face publication target for the Rus
 | Category | Count |
 | --- | ---: |
 | compile_repair | 9,000 |
-| semantic_impl | 9,000 |
-| test_driven_bugfix | 7,000 |
+| semantic_impl | 8,000 |
+| test_driven_bugfix | 6,500 |
 | edition2024_migration | 5,000 |
-| async_concurrency_fix | 5,000 |
-| unsafe_ffi_fix | 5,000 |
+| async_concurrency_fix | 4,500 |
+| unsafe_ffi_fix | 4,500 |
 | clippy_fmt_cleanup | 2,500 |
 | macro_fix | 2,500 |
-| api_refactor | 1,500 |
-| doctest_doc_fix | 1,000 |
-| rust_qa | 1,500 |
+| api_refactor | 2,000 |
+| doctest_doc_fix | 1,500 |
+| cargo_workspace_fix | 3,000 |
+| rust_qa | 1,000 |
 | review_preference | 1,000 |
 
 Total: `50,000`
