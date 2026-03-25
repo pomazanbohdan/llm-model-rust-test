@@ -24,6 +24,6 @@ This package is a smaller high-confidence training subset built from:
 - a small auxiliary tail
 
 - total rows: `14995`
-- verified core rows: `12445`
-- stable synthetic core rows: `1800`
+- verified core rows: `14245`
+- stable synthetic core rows: `0`
 - auxiliary rows: `750`

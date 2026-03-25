@@ -4,7 +4,7 @@
 
 - canonical dataset: [hf-dataset](/C:/project/rust-test/hf-dataset)
 - recommended low-cost subset: [hf-dataset-priority](/C:/project/rust-test/hf-dataset-priority)
-- total validated rows: `25,280`
+- total validated rows: `47,089`
 - failed validated rows: `0`
 - categories at `50%+` ideality: `13/13`
 - stable families: `56/56`
@@ -30,6 +30,5 @@
 ## Current Training Subset
 
 - total rows: `14,995`
-- verified core rows: `12,445`
-- stable core rows: `1,800`
+- verified core rows: `14,245`
 - auxiliary rows: `750`

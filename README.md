@@ -84,21 +84,20 @@ python .\scripts\parallel-improve-hf-dataset.py --validation-tier full --window-
 
 Current dataset quality state:
 
-- `25,280` validated rows across the canonical `hf-dataset`
+- `47,089` validated rows across the canonical `hf-dataset`
 - all `13` dataset categories are now at `50%+` ideality coverage
 - `52/52` core families remain stable on execution validation
 - `56/56` total families are now stable after auxiliary schema validation
-- current family-depth floor is `289` for core families and `167` across all families
-- current family-depth ceiling is `813`
+- current family-depth floor is `400` for core families and `333` across all families
+- current family-depth ceiling is `1,626`
 - `0` failed rows in the aggregated family score snapshot
-- category coverage at or above `50%` now includes `semantic_impl`, `compile_repair`, `test_driven_bugfix`, `unsafe_ffi_fix`, `edition2024_migration`, `async_concurrency_fix`, `cargo_workspace_fix`, `clippy_fmt_cleanup`, `macro_fix`, `rust_qa`, and `review_preference`
+- capped `x2` family-depth uplift is complete relative to the previous baseline
 
 Current training subset:
 
 - [hf-dataset-priority](/C:/project/rust-test/hf-dataset-priority)
 - `14,995` rows
-- `12,445` verified core rows
-- `1,800` stable core rows
+- `14,245` verified core rows
 - `750` auxiliary rows
 
 Current dataset reports:

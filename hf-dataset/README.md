@@ -109,13 +109,13 @@ Current quality work recorded in the repository includes:
 Current dataset state:
 
 - `52/52` core families pass `cheap`, `medium`, and `full`
-- `25,280` validated rows are tracked across the aggregated quality reports
+- `47,089` validated rows are tracked across the aggregated quality reports
 - all `13` dataset categories now reach `50%+` coverage
 - core execution families remain stable and auxiliary families now have schema/content validation coverage as well
 - aggregated validation currently shows `0` failed rows
 - all `56` families satisfy the current stable-family threshold under their category-appropriate validation path
-- current family-depth floor is `289` for core execution families and `167` across all families including auxiliary
-- current family-depth ceiling is `813`, reached by the `test_driven_bugfix` family block
+- current family-depth floor is `400` for core execution families and `333` across all families including auxiliary
+- current family-depth ceiling is `1,626`, reached by the `test_driven_bugfix.nonempty_lines` family
 
 Reference reports:
 
@@ -179,8 +179,7 @@ For lower-cost fine-tuning, the repository currently recommends:
 
 - [`hf-dataset-priority`](https://github.com/pomazanbohdan/llm-model-rust-test/tree/main/hf-dataset-priority)
 - total rows: `14,995`
-- verified core rows: `12,445`
-- stable core rows: `1,800`
+- verified core rows: `14,245`
 - auxiliary rows: `750`
 
 This subset is built from the canonical corpus plus aggregated family validation results and is the best current starting point for Rust-focused SFT with a tighter token budget.

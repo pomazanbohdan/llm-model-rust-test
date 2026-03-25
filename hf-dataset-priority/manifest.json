@@ -1,8 +1,7 @@
 {
   "total_rows": 14995,
   "bucket_counts": {
-    "verified_core": 12445,
-    "stable_core": 1800,
+    "verified_core": 14245,
     "auxiliary_tail": 750
   },
   "category_counts": {
@@ -21,6 +20,6 @@
     "rust_qa": 375
   },
   "source_dataset": "hf-dataset",
-  "min_family_validated": 289,
+  "min_family_validated": 400,
   "min_family_pass_rate": 1.0
 }
