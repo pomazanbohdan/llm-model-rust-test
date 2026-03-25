@@ -106,7 +106,7 @@ Current quality work recorded in the repository includes:
 - parallel family-depth validation to grow verified coverage efficiently
 - optimized priority-train builders for lower-cost fine-tuning
 
-Current validated-depth milestone:
+Current dataset state:
 
 - `52/52` core families pass `cheap`, `medium`, and `full`
 - `25,280` validated rows are tracked across the aggregated quality reports
@@ -114,13 +114,13 @@ Current validated-depth milestone:
 - core execution families remain stable and auxiliary families now have schema/content validation coverage as well
 - aggregated validation currently shows `0` failed rows
 - all `56` families satisfy the current stable-family threshold under their category-appropriate validation path
+- current family-depth floor is `289` for core execution families and `167` across all families including auxiliary
+- current family-depth ceiling is `813`, reached by the `test_driven_bugfix` family block
 
 Reference reports:
 
-- [2026-03-25 HF dataset QC](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-hf-dataset-qc.md)
-- [2026-03-25 Rust gap analysis](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-rust-gap-analysis.md)
-- [2026-03-25 Parallel improvement program](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-parallel-improvement-program.md)
-- [2026-03-25 Category coverage uplift](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/2026-03-25-category-coverage-uplift.md)
+- [Current dataset status](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/current-dataset-status.md)
+- [Current family depth](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/current-family-depth.md)
 
 ## Category mix
 
@@ -177,7 +177,7 @@ If your Unsloth or trainer UI expects an instruction-response mapping instead of
 
 For lower-cost fine-tuning, the repository currently recommends:
 
-- [`hf-dataset-priority-v12`](https://github.com/pomazanbohdan/llm-model-rust-test/tree/main/hf-dataset-priority-v12)
+- [`hf-dataset-priority`](https://github.com/pomazanbohdan/llm-model-rust-test/tree/main/hf-dataset-priority)
 - total rows: `14,995`
 - verified core rows: `12,445`
 - stable core rows: `1,800`

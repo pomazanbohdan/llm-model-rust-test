@@ -20,9 +20,7 @@ The initial scaffold in this repository focuses on Phase 1:
 
 The broader rollout and target benchmark size are documented in `docs/benchmark-plan.md`.
 
-## Latest Results
-
-Latest comparison date: `2026-03-25`
+## Current Results
 
 Composite score methodology for this leaderboard:
 
@@ -42,7 +40,7 @@ Composite score methodology for this leaderboard:
 
 Detailed report:
 
-- [reports/2026-03-25-model-comparison.md](/C:/project/rust-test/reports/2026-03-25-model-comparison.md)
+- [reports/current-model-comparison.md](/C:/project/rust-test/reports/current-model-comparison.md)
 
 ## Personal Dataset
 
@@ -84,64 +82,29 @@ python .\scripts\optimize-hf-train.py --target-rows 15000 --min-family-validated
 python .\scripts\parallel-improve-hf-dataset.py --validation-tier full --window-size 2 --waves 2 --start-offset 1 --workers 4 --timeout-sec 90 --target-rows 15000 --aux-share 0.05
 ```
 
-Latest verified-expansion milestone:
-
-- `1100` verified core rows
-- `100` validated rows per core category across the first ten rolling windows
-
-Latest optimized train milestone:
-
-- `14,995` rows in `priority_train`
-- `342` verified core rows in `hf-dataset-priority-v4`
-- `13,903` stable-family core rows
-- `750` auxiliary rows
-
-Latest parallel depth milestone:
-
-- `52/52` core families pass `cheap`, `medium`, and `full`
-- Rust coverage expanded with:
-  - `compile_repair.stringify_collect_owned`
-  - `edition2024_migration.static_mut_once_lock`
-  - `async_concurrency_fix.watch_shutdown`
-  - `cargo_workspace_fix.workspace_feature_flag`
-- additional targeted waves passed cleanly:
-  - `semantic_impl`: `40/40`
-  - `unsafe_ffi_fix`: `25/25`
-  - `async_concurrency_fix`: `30/30`
-  - `edition2024_migration`: `30/30`
-  - `cargo_workspace_fix`: `25/25`
-  - `compile_repair`: `25/25`
-  - `test_driven_bugfix`: `20/20`
-  - `doctest_doc_fix`: `15/15`
-  - `clippy_fmt_cleanup`: `15/15`
-  - `api_refactor`: `20/20`
-  - `macro_fix`: `15/15`
-
-Latest validated-depth milestone:
+Current dataset quality state:
 
 - `25,280` validated rows across the canonical `hf-dataset`
 - all `13` dataset categories are now at `50%+` ideality coverage
 - `52/52` core families remain stable on execution validation
 - `56/56` total families are now stable after auxiliary schema validation
+- current family-depth floor is `289` for core families and `167` across all families
+- current family-depth ceiling is `813`
 - `0` failed rows in the aggregated family score snapshot
 - category coverage at or above `50%` now includes `semantic_impl`, `compile_repair`, `test_driven_bugfix`, `unsafe_ffi_fix`, `edition2024_migration`, `async_concurrency_fix`, `cargo_workspace_fix`, `clippy_fmt_cleanup`, `macro_fix`, `rust_qa`, and `review_preference`
 
-Recommended current training subset:
+Current training subset:
 
-- [hf-dataset-priority-v12](/C:/project/rust-test/hf-dataset-priority-v12)
+- [hf-dataset-priority](/C:/project/rust-test/hf-dataset-priority)
 - `14,995` rows
 - `12,445` verified core rows
 - `1,800` stable core rows
 - `750` auxiliary rows
 
-Current dataset QC report:
+Current dataset reports:
 
-- [reports/2026-03-25-hf-dataset-qc.md](/C:/project/rust-test/reports/2026-03-25-hf-dataset-qc.md)
-- [reports/2026-03-25-rust-gap-analysis.md](/C:/project/rust-test/reports/2026-03-25-rust-gap-analysis.md)
-- [reports/2026-03-25-hf-dataset-quality-iteration-v3.md](/C:/project/rust-test/reports/2026-03-25-hf-dataset-quality-iteration-v3.md)
-- [reports/2026-03-25-hf-dataset-family-cascade-v2.md](/C:/project/rust-test/reports/2026-03-25-hf-dataset-family-cascade-v2.md)
-- [reports/2026-03-25-parallel-improvement-program.md](/C:/project/rust-test/reports/2026-03-25-parallel-improvement-program.md)
-- [reports/2026-03-25-category-coverage-uplift.md](/C:/project/rust-test/reports/2026-03-25-category-coverage-uplift.md)
+- [reports/current-dataset-status.md](/C:/project/rust-test/reports/current-dataset-status.md)
+- [reports/current-family-depth.md](/C:/project/rust-test/reports/current-family-depth.md)
 
 ## Layout
 
