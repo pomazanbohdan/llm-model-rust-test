@@ -92,8 +92,8 @@ Artifacts:
 Current aggregate quality state:
 
 - [family-scores-all](/C:/project/rust-test/hf-dataset/reports/family-scores-all)
-- `676` validated core rows tracked across all validation artifacts
-- `13` validated rows for every one of the `52` core families
+- `1,300` validated core rows tracked across all validation artifacts
+- `25` validated rows for every one of the `52` core families
 - `0` failed rows in the aggregated family score snapshot
 
 ### Track C: Priority Subset Refresh
@@ -132,6 +132,15 @@ Latest high-confidence subset after the expanded depth program:
 - auxiliary rows: `750`
 - threshold used: `13` validated rows per family at `100%` pass rate
 
+Current default high-confidence subset:
+
+- [hf-dataset-priority-v8](/C:/project/rust-test/hf-dataset-priority-v8)
+- total rows: `14,995`
+- verified core rows: `1,196`
+- stable core rows: `13,049`
+- auxiliary rows: `750`
+- threshold used: `25` validated rows per family at `100%` pass rate
+
 ### Track D: Generator Hardening
 
 Status: completed
@@ -142,7 +151,7 @@ Status: completed
 
 ## Next Best Steps
 
-1. Raise validated depth from `13` to `25+` rows per core family.
-2. Promote [hf-dataset-priority-v7](/C:/project/rust-test/hf-dataset-priority-v7) as the default low-cost training subset.
+1. Raise validated depth from `25` to `50+` rows per core family.
+2. Promote [hf-dataset-priority-v8](/C:/project/rust-test/hf-dataset-priority-v8) as the default low-cost training subset.
 3. Keep growing full validation on `semantic_impl`, `unsafe_ffi_fix`, `async_concurrency_fix`, `edition2024_migration`, and `cargo_workspace_fix`.
 4. Refresh the HF dataset card whenever the validated-depth milestone moves materially.
