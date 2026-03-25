@@ -75,8 +75,8 @@ python .\scripts\expand-hf-verified.py --window-size 10 --windows 5 --timeout-se
 
 Latest verified-expansion milestone:
 
-- `550` verified core rows
-- `50` validated rows per core category across the first five rolling windows
+- `1100` verified core rows
+- `100` validated rows per core category across the first ten rolling windows
 
 Current dataset QC report:
 

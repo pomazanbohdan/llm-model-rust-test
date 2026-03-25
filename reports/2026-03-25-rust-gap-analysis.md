@@ -175,13 +175,13 @@ This is much better than the initial 50k draft, but it still leaves enough repet
 
 ### Verified subset is still small relative to corpus size
 
-`110` rows were promoted into the base verified subset, and `550` rows now pass the expanded rolling validation subset.
+`110` rows were promoted into the base verified subset, and `1100` rows now pass the expanded rolling validation subset.
 
-That is enough to prove the strengthen pipeline works and the first rolling slices of the core families are stable, but it is still not enough to anchor the entire 50k corpus by verified rows alone.
+That is enough to prove the strengthen pipeline works and the first `100` rows of every core family are stable, but it is still not enough to anchor the entire 50k corpus by verified rows alone.
 
 ### Validation depth is still sampled
 
-The latest sampled validation now passes at `10/10` per core category, and the first `50` rows per core category also pass under the rolling validator. That is a real improvement and a meaningful local milestone.
+The latest sampled validation now passes at `10/10` per core category, and the first `100` rows per core category also pass under the rolling validator. That is a real improvement and a meaningful local milestone.
 
 But it is still sampled validation, not broad verified coverage across the whole corpus.
 
