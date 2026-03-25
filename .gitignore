@@ -8,3 +8,5 @@ hf-dataset/data/train-*.jsonl
 hf-dataset/reports/
 hf-dataset-verified/
 hf-dataset-verified-expanded/
+hf-dataset-priority/
+scripts/__pycache__/

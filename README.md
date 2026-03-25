@@ -70,13 +70,21 @@ Dataset pipeline:
 
 ```powershell
 python .\scripts\strengthen-hf-dataset.py --max-per-category 10 --timeout-sec 90
-python .\scripts\expand-hf-verified.py --window-size 10 --windows 5 --timeout-sec 90
+python .\scripts\expand-hf-verified.py --window-size 10 --windows 10 --timeout-sec 90
+python .\scripts\optimize-hf-train.py --target-rows 15000 --min-family-validated 20 --min-family-pass-rate 1.0 --aux-share 0.05
 ```
 
 Latest verified-expansion milestone:
 
 - `1100` verified core rows
 - `100` validated rows per core category across the first ten rolling windows
+
+Latest optimized train milestone:
+
+- `14,995` rows in `priority_train`
+- `1,100` verified core rows
+- `13,145` stable-family core rows
+- `750` auxiliary rows
 
 Current dataset QC report:
 

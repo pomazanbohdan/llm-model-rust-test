@@ -8,6 +8,8 @@ import tempfile
 from collections import Counter
 from pathlib import Path
 
+from rustforge_family import derive_family_id
+
 
 DEFAULT_INPUT_DIR = "hf-dataset"
 DEFAULT_REPORT_DIR = "hf-dataset/reports/validation"
@@ -19,6 +21,11 @@ CHECKS = [
     ("doc", ["cargo", "doc", "--no-deps"]),
     ("doctest", ["cargo", "test", "--doc", "-v"]),
 ]
+CHECK_TIERS = {
+    "cheap": {"check", "fmt"},
+    "medium": {"check", "fmt", "clippy", "test"},
+    "full": {"check", "fmt", "clippy", "test", "doc", "doctest"},
+}
 
 
 def iter_records(data_dir: Path):
@@ -92,15 +99,18 @@ def retry_doctest_in_fresh_workspace(record: dict[str, object], timeout_sec: int
         return retried
 
 
-def validate_record(record: dict[str, object], timeout_sec: int) -> dict[str, object]:
+def validate_record(record: dict[str, object], timeout_sec: int, validation_tier: str) -> dict[str, object]:
     category = str(record["category"])
     tier = str(record["tier"])
+    family_id = derive_family_id(record)
     if tier == "auxiliary":
         return {
             "id": record["id"],
             "category": category,
+            "family_id": family_id,
             "tier": tier,
             "status": "skipped_auxiliary",
+            "validation_tier": validation_tier,
             "checks": [],
             "validation": record["validation"],
         }
@@ -108,27 +118,29 @@ def validate_record(record: dict[str, object], timeout_sec: int) -> dict[str, ob
     with tempfile.TemporaryDirectory(prefix="rustforge-validate-") as temp_dir:
         work_dir = Path(temp_dir)
         materialize_workspace(work_dir, record)
-        check_results = [run_check(work_dir, name, command, timeout_sec) for name, command in CHECKS]
+        enabled_checks = CHECK_TIERS[validation_tier]
+        check_results = [run_check(work_dir, name, command, timeout_sec) for name, command in CHECKS if name in enabled_checks]
         failed_checks = [item for item in check_results if not item["ok"]]
-        if len(failed_checks) == 1 and failed_checks[0]["name"] == "doctest":
+        if validation_tier == "full" and len(failed_checks) == 1 and failed_checks[0]["name"] == "doctest":
             retried = run_check(work_dir, "doctest", ["cargo", "test", "--doc", "-v"], timeout_sec)
             retried["retried"] = True
             if not retried["ok"]:
                 retried = retry_doctest_in_fresh_workspace(record, timeout_sec)
             check_results = [item if item["name"] != "doctest" else retried for item in check_results]
+        results_by_name = {item["name"]: item for item in check_results}
         validation = {
-            "check": next(item["ok"] for item in check_results if item["name"] == "check"),
-            "clippy": next(item["ok"] for item in check_results if item["name"] == "clippy"),
-            "test": next(item["ok"] for item in check_results if item["name"] == "test"),
-            "fmt": next(item["ok"] for item in check_results if item["name"] == "fmt"),
-            "doc": next(item["ok"] for item in check_results if item["name"] == "doc"),
-            "doctest": next(item["ok"] for item in check_results if item["name"] == "doctest"),
-            "notes": "Validated from target_files over workspace_files.",
+            "check": results_by_name["check"]["ok"] if "check" in results_by_name else None,
+            "clippy": results_by_name["clippy"]["ok"] if "clippy" in results_by_name else None,
+            "test": results_by_name["test"]["ok"] if "test" in results_by_name else None,
+            "fmt": results_by_name["fmt"]["ok"] if "fmt" in results_by_name else None,
+            "doc": results_by_name["doc"]["ok"] if "doc" in results_by_name else None,
+            "doctest": results_by_name["doctest"]["ok"] if "doctest" in results_by_name else None,
+            "notes": f"Validated from target_files over workspace_files using {validation_tier} tier.",
         }
         failed_checks = [item for item in check_results if not item["ok"]]
         has_real_failure = any("infra_error" not in item for item in failed_checks)
         has_infra_only_failure = bool(failed_checks) and not has_real_failure
-        if all(validation[key] for key in ("check", "clippy", "test", "fmt", "doc", "doctest")):
+        if all(item["ok"] for item in check_results):
             status = "validated"
         elif has_infra_only_failure:
             status = "skipped_infra"
@@ -138,8 +150,10 @@ def validate_record(record: dict[str, object], timeout_sec: int) -> dict[str, ob
         return {
             "id": record["id"],
             "category": category,
+            "family_id": family_id,
             "tier": tier,
             "status": status,
+            "validation_tier": validation_tier,
             "checks": check_results,
             "validation": validation,
         }
@@ -153,6 +167,8 @@ def main() -> None:
     parser.add_argument("--max-per-category", type=int, default=0, help="Maximum validations per category. 0 means unlimited.")
     parser.add_argument("--start-per-category", type=int, default=0, help="Skip this many records per category before validating.")
     parser.add_argument("--tiers", choices=["all", "core", "auxiliary"], default="all")
+    parser.add_argument("--validation-tier", choices=["cheap", "medium", "full"], default="full")
+    parser.add_argument("--family-include", default="", help="Comma-separated family ids to keep. Empty means all.")
     parser.add_argument("--timeout-sec", type=int, default=60)
     args = parser.parse_args()
 
@@ -168,18 +184,22 @@ def main() -> None:
     reports: list[dict[str, object]] = []
     per_category: Counter[str] = Counter()
     seen_per_category: Counter[str] = Counter()
+    family_filter = {item.strip() for item in args.family_include.split(",") if item.strip()}
 
     for _shard_name, _line_number, record in iter_records(data_dir):
         category = str(record["category"])
         tier = str(record["tier"])
+        family_id = derive_family_id(record)
         if args.tiers != "all" and tier != args.tiers:
+            continue
+        if family_filter and family_id not in family_filter:
             continue
         if seen_per_category[category] < args.start_per_category:
             seen_per_category[category] += 1
             continue
         if args.max_per_category and per_category[category] >= args.max_per_category:
             continue
-        report = validate_record(record, args.timeout_sec)
+        report = validate_record(record, args.timeout_sec, args.validation_tier)
         reports.append(report)
         per_category[category] += 1
         if args.limit and len(reports) >= args.limit:
@@ -187,8 +207,10 @@ def main() -> None:
 
     summary = {
         "validated_records": len(reports),
+        "validation_tier": args.validation_tier,
         "status_counts": dict(Counter(item["status"] for item in reports)),
         "category_counts": dict(Counter(item["category"] for item in reports)),
+        "family_counts": dict(Counter(item["family_id"] for item in reports)),
     }
 
     (report_dir / "validation-report.jsonl").write_text(
