@@ -1,0 +1,37 @@
+version = 1
+cases_dir = "cases"
+runs_dir = ".runs"
+
+[commands.check]
+program = "cargo"
+args = ["check", "--all-targets"]
+
+[commands.clippy]
+program = "cargo"
+args = ["clippy", "--all-targets", "--", "-D", "warnings"]
+
+[commands.test]
+program = "cargo"
+args = ["test", "--all-targets"]
+
+[commands.fmt]
+program = "cargo"
+args = ["fmt", "--check"]
+
+[commands.doc]
+program = "cargo"
+args = ["doc", "--no-deps"]
+
+[commands.doctest]
+program = "cargo"
+args = ["test", "--doc"]
+
+[layer_defaults.compile]
+checks = ["check", "clippy", "fmt", "doc"]
+
+[layer_defaults.semantic]
+checks = ["check", "clippy", "test", "fmt", "doc", "doctest"]
+
+[layer_defaults.edition2024]
+checks = ["check", "clippy", "test", "fmt", "doc", "doctest"]
+

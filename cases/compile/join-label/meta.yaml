@@ -1,0 +1,15 @@
+id: compile/join-label
+title: Join a borrowed prefix into an owned label
+layer: compile
+category: compile_correctness
+edition: "2024"
+difficulty: easy
+repair_vs_generate: generate
+tags:
+  - strings
+  - ownership
+requires_async: false
+unsafe: false
+ffi: false
+macro: false
+

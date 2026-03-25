@@ -1,0 +1,15 @@
+id: compile/repair-push-slug
+title: Repair a mutable borrow conflict with a minimal patch
+layer: compile
+category: compile_correctness
+edition: "2024"
+difficulty: easy
+repair_vs_generate: repair
+tags:
+  - borrow-checker
+  - vec
+requires_async: false
+unsafe: false
+ffi: false
+macro: false
+

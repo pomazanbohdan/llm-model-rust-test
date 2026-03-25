@@ -1,0 +1,8 @@
+[package]
+name = "compile_repair_push_slug"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+path = "src/lib.rs"
+

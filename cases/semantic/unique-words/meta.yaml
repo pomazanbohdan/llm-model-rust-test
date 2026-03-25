@@ -1,0 +1,15 @@
+id: semantic/unique-words
+title: Normalize and deduplicate words while preserving order
+layer: semantic
+category: semantic_correctness
+edition: "2024"
+difficulty: medium
+repair_vs_generate: generate
+tags:
+  - iterators
+  - collections
+requires_async: false
+unsafe: false
+ffi: false
+macro: false
+

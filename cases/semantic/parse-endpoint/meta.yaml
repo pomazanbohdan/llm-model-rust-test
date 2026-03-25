@@ -1,0 +1,15 @@
+id: semantic/parse-endpoint
+title: Parse host and port into a typed endpoint
+layer: semantic
+category: semantic_correctness
+edition: "2024"
+difficulty: medium
+repair_vs_generate: generate
+tags:
+  - parsing
+  - error-handling
+requires_async: false
+unsafe: false
+ffi: false
+macro: false
+

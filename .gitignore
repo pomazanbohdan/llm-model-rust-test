@@ -1,0 +1,6 @@
+target/
+.runs/
+model-workspaces/
+**/.nanocoder/
+model-box/results/
+model-box/workspace/

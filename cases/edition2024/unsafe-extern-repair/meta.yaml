@@ -1,0 +1,20 @@
+id: edition2024/unsafe-extern-repair
+title: Repair extern block declarations for Rust 2024
+layer: edition2024
+category: rust_2024_compatibility
+edition: "2024"
+difficulty: easy
+repair_vs_generate: repair
+checks:
+  - check
+  - clippy
+  - fmt
+  - doc
+tags:
+  - rust-2024
+  - ffi
+requires_async: false
+unsafe: true
+ffi: true
+macro: false
+

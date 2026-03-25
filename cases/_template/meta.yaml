@@ -1,0 +1,14 @@
+id: template/example-case
+title: Example case title
+layer: semantic
+category: semantic_correctness
+edition: "2024"
+difficulty: medium
+repair_vs_generate: generate
+tags:
+  - example
+requires_async: false
+unsafe: false
+ffi: false
+macro: false
+
