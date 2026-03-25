@@ -24,7 +24,7 @@ configs:
 
 # RustForge Personal Rust Dataset
 
-Current version: `0.5.1`
+Current version: `0.5.2`
 
 Target Hub repo: `pomazanbohdan/rustforge-personal-rust-dataset`
 

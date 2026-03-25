@@ -8,6 +8,29 @@ Run dataset improvement as multiple coordinated tracks instead of one long seque
 
 ## Tracks
 
+## Coverage Expansion
+
+Status: completed
+
+New Rust-specific family coverage added in the latest generator pass:
+
+- `compile_repair.stringify_collect_owned`
+- `edition2024_migration.static_mut_once_lock`
+- `async_concurrency_fix.watch_shutdown`
+- `cargo_workspace_fix.workspace_feature_flag`
+
+Current core coverage baseline:
+
+- `52/52` core families pass `cheap`, `medium`, and `full`
+- `edition2024_migration` now covers `6` families
+- `async_concurrency_fix` now covers `6` families
+- `cargo_workspace_fix` now covers `5` families
+- `compile_repair` now covers `5` families
+
+Important generator hardening:
+
+- [generate-hf-rustforge-50k.py](/C:/project/rust-test/scripts/generate-hf-rustforge-50k.py) now preserves `hf-dataset/reports/` during corpus rebuilds instead of deleting local validation history
+
 ### Track A: Family Stability
 
 Status: completed
@@ -90,3 +113,4 @@ Status: completed
 1. Expand family-depth validation beyond the first `4` rows per family.
 2. Promote `hf-dataset-priority-v4` as the default low-cost training subset.
 3. Keep increasing verified depth on `semantic_impl`, `unsafe_ffi_fix`, and `cargo_workspace_fix` before broadening to the remaining core families.
+4. Raise verified depth for the four new coverage families so they can join the high-confidence train mix without lowering the stable-family threshold.

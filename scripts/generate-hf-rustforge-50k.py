@@ -10,7 +10,7 @@ from pathlib import Path
 DEFAULT_REPO_ID = "pomazanbohdan/rustforge-personal-rust-dataset"
 DEFAULT_OUTPUT_DIR = "hf-dataset"
 DEFAULT_SOURCE_DIR = "hf-source/batches"
-DATASET_VERSION = "0.5.1"
+DATASET_VERSION = "0.5.2"
 SHARD_SIZE = 5000
 
 MODIFIERS = [
@@ -222,7 +222,7 @@ def gen_compile_repair(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 1)
     crate_name = f"compile_repair_{name}"
     fallback = f"{pick(MODIFIERS, idx, 2)}-{pick(ENTITIES, idx, 3)}"
-    variant = idx % 4
+    variant = idx % 6
     if variant == 0:
         family_id = "compile_repair.push_first_clone"
         workspace = (
@@ -266,7 +266,7 @@ def gen_compile_repair(idx: int, tier: str) -> dict[str, object]:
             "    labels.join(\",\")\n"
             "}\n"
         )
-    else:
+    elif variant == 3:
         family_id = "compile_repair.parse_ports_collect"
         signature = f"pub fn parse_{name}_ports(input: &[String]) -> Result<Vec<u16>, std::num::ParseIntError> {{"
         if len(signature) > 100:
@@ -285,6 +285,25 @@ def gen_compile_repair(idx: int, tier: str) -> dict[str, object]:
             "    input.iter().map(|item| item.parse::<u16>()).collect()\n"
             "}\n"
         )
+    else:
+        family_id = "compile_repair.stringify_collect_owned"
+        workspace = (
+            f"pub fn stringify_{name}<T: ToString>(input: &[T]) -> Vec<&str> {{\n"
+            "    input\n"
+            "        .iter()\n"
+            "        .map(|item| item.to_string().trim())\n"
+            "        .collect()\n"
+            "}\n"
+        )
+        target = (
+            f"pub fn stringify_{name}<T: ToString>(input: &[T]) -> Vec<String> {{\n"
+            "    input\n"
+            "        .iter()\n"
+            "        .map(|item| item.to_string())\n"
+            "        .map(|item| item.trim().to_string())\n"
+            "        .collect()\n"
+            "}\n"
+        )
     return make_record(
         example_id=f"compile_repair.{name}.{idx + 1:06d}",
         family_id=family_id,
@@ -296,7 +315,7 @@ def gen_compile_repair(idx: int, tier: str) -> dict[str, object]:
         workspace_files=[{"path": "Cargo.toml", "content": cargo_toml(crate_name)}, {"path": "src/lib.rs", "content": workspace}],
         target_files=[{"path": "src/lib.rs", "content": target}],
         tags=["compile", "ownership", name],
-        source_name="compile_repair_generator_v2",
+        source_name="compile_repair_generator_v3",
         note="Synthetic compile-repair example pending validation.",
     )
 
@@ -536,7 +555,7 @@ def gen_semantic_impl(idx: int, tier: str) -> dict[str, object]:
 def gen_bugfix(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 3)
     crate_name = f"bugfix_{name}"
-    variant = idx % 4
+    variant = idx % 6
     if variant == 0:
         family_id = "test_driven_bugfix.normalize_path"
         workspace = (
@@ -628,7 +647,7 @@ def gen_bugfix(idx: int, tier: str) -> dict[str, object]:
 def gen_edition(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 4)
     crate_name = f"edition2024_{name}"
-    variant = idx % 5
+    variant = idx % 6
     if variant == 0:
         family_id = "edition2024_migration.unsafe_env_set"
         workspace = f'pub fn bootstrap_env(value: &str) {{\n    std::env::set_var("APP_{name.upper()}", value);\n}}\n'
@@ -645,7 +664,7 @@ def gen_edition(idx: int, tier: str) -> dict[str, object]:
         family_id = "edition2024_migration.unsafe_env_remove"
         workspace = f'pub fn clear_env() {{\n    std::env::remove_var("APP_{name.upper()}");\n}}\n'
         target = f'pub fn clear_env() {{\n    // SAFETY: This helper runs during single-threaded process bootstrap.\n    unsafe {{\n        std::env::remove_var("APP_{name.upper()}");\n    }}\n}}\n'
-    else:
+    elif variant == 4:
         family_id = "edition2024_migration.unsafe_op_in_unsafe_fn"
         workspace = (
             "use std::slice;\n\n"
@@ -661,6 +680,25 @@ def gen_edition(idx: int, tier: str) -> dict[str, object]:
             "    unsafe { slice::from_raw_parts(ptr, len) }\n"
             "}\n"
         )
+    else:
+        family_id = "edition2024_migration.static_mut_once_lock"
+        workspace = (
+            "static mut CONFIG: Option<String> = None;\n\n"
+            f"pub fn config_{name}() -> &'static str {{\n"
+            "    unsafe {\n"
+            f"        CONFIG.get_or_insert_with(|| \"{name}\".to_string()).as_str()\n"
+            "    }\n"
+            "}\n"
+        )
+        target = (
+            "use std::sync::OnceLock;\n\n"
+            "static CONFIG: OnceLock<String> = OnceLock::new();\n\n"
+            f"pub fn config_{name}() -> &'static str {{\n"
+            "    CONFIG\n"
+            f"        .get_or_init(|| \"{name}\".to_string())\n"
+            "        .as_str()\n"
+            "}\n"
+        )
     return make_record(
         example_id=f"edition2024_migration.{name}.{idx + 1:06d}",
         family_id=family_id,
@@ -672,7 +710,7 @@ def gen_edition(idx: int, tier: str) -> dict[str, object]:
         workspace_files=[{"path": "Cargo.toml", "content": cargo_toml(crate_name)}, {"path": "src/lib.rs", "content": workspace}],
         target_files=[{"path": "src/lib.rs", "content": target}],
         tags=["edition2024", name],
-        source_name="edition2024_generator_v2",
+        source_name="edition2024_generator_v3",
         note="Synthetic Rust 2024 migration example pending validation.",
     )
 
@@ -681,7 +719,7 @@ def gen_async(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 5)
     crate_name = f"async_fix_{name}"
     cargo = cargo_toml(crate_name, ['tokio = { version = "1", features = ["sync", "rt", "time"] }'])
-    variant = idx % 5
+    variant = idx % 6
     if variant == 0:
         family_id = "async_concurrency_fix.mutex_refresh"
         workspace = (
@@ -748,7 +786,7 @@ def gen_async(idx: int, tier: str) -> dict[str, object]:
             "    next\n"
             "}\n"
         )
-    else:
+    elif variant == 4:
         family_id = "async_concurrency_fix.timeout_default"
         cargo = cargo_toml(crate_name, ['tokio = { version = "1", features = ["time", "rt"] }'])
         workspace = (
@@ -769,6 +807,29 @@ def gen_async(idx: int, tier: str) -> dict[str, object]:
             "        .unwrap_or_default()\n"
             "}\n"
         )
+    else:
+        family_id = "async_concurrency_fix.watch_shutdown"
+        cargo = cargo_toml(crate_name, ['tokio = { version = "1", features = ["sync", "rt"] }'])
+        workspace = (
+            "use tokio::sync::watch;\n\n"
+            f"pub async fn wait_{name}_shutdown(mut rx: watch::Receiver<bool>) -> bool {{\n"
+            "    while !*rx.borrow() {\n"
+            "        rx.changed().await.unwrap();\n"
+            "    }\n"
+            "    true\n"
+            "}\n"
+        )
+        target = (
+            "use tokio::sync::watch;\n\n"
+            f"pub async fn wait_{name}_shutdown(mut rx: watch::Receiver<bool>) -> bool {{\n"
+            "    while !*rx.borrow() {\n"
+            "        if rx.changed().await.is_err() {\n"
+            "            return false;\n"
+            "        }\n"
+            "    }\n"
+            "    true\n"
+            "}\n"
+        )
     return make_record(
         example_id=f"async_concurrency_fix.{name}.{idx + 1:06d}",
         family_id=family_id,
@@ -780,7 +841,7 @@ def gen_async(idx: int, tier: str) -> dict[str, object]:
         workspace_files=[{"path": "Cargo.toml", "content": cargo}, {"path": "src/lib.rs", "content": workspace}],
         target_files=[{"path": "src/lib.rs", "content": target}],
         tags=["async", name],
-        source_name="async_generator_v2",
+        source_name="async_generator_v3",
         note="Synthetic async example pending validation.",
         hidden_file_count=1,
     )
@@ -981,7 +1042,7 @@ def gen_macro(idx: int, tier: str) -> dict[str, object]:
 def gen_api(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 9)
     crate_name = f"api_refactor_{name}"
-    variant = idx % 4
+    variant = idx % 5
     if variant == 0:
         family_id = "api_refactor.panic_to_result"
         workspace = f"pub fn parse_{name}_port(input: &str) -> u16 {{\n    input.parse::<u16>().unwrap()\n}}\n"
@@ -1079,7 +1140,7 @@ def gen_workspace(idx: int, tier: str) -> dict[str, object]:
     core_name = f"{name}_core"
     app_name = f"{name}_app"
     root_workspace = "[workspace]\nmembers = [\"crates/core\", \"crates/app\"]\nresolver = \"3\"\n"
-    variant = idx % 4
+    variant = idx % 5
     if variant == 0:
         family_id = "cargo_workspace_fix.workspace_dependency_path"
         workspace_files = [
@@ -1110,7 +1171,7 @@ def gen_workspace(idx: int, tier: str) -> dict[str, object]:
             {"path": "crates/app/src/main.rs", "content": f"fn main() {{\n    println!(\"{{}}\", {core_name}::label());\n}}\n"},
         ]
         target_files = [{"path": "Cargo.toml", "content": root_workspace}]
-    else:
+    elif variant == 3:
         family_id = "cargo_workspace_fix.workspace_inheritance"
         workspace_files = [
             {"path": "Cargo.toml", "content": "[workspace]\nmembers = [\"crates/core\", \"crates/app\"]\nresolver = \"3\"\n\n[workspace.package]\nedition = \"2024\"\n"},
@@ -1123,6 +1184,18 @@ def gen_workspace(idx: int, tier: str) -> dict[str, object]:
             {"path": "crates/core/Cargo.toml", "content": "[package]\nname = \"" + core_name + "\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n"},
             {"path": "crates/app/Cargo.toml", "content": "[package]\nname = \"" + app_name + "\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n[dependencies]\n" + core_name + " = { path = \"../core\" }\n"},
         ]
+    else:
+        family_id = "cargo_workspace_fix.workspace_feature_flag"
+        workspace_files = [
+            {"path": "Cargo.toml", "content": root_workspace},
+            {"path": "crates/core/Cargo.toml", "content": "[package]\nname = \"" + core_name + "\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n"},
+            {"path": "crates/core/src/lib.rs", "content": "#[cfg(feature = \"extra\")]\npub fn feature_label() -> &'static str {\n    \"extra\"\n}\n"},
+            {"path": "crates/app/Cargo.toml", "content": "[package]\nname = \"" + app_name + "\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n[dependencies]\n" + core_name + " = { path = \"../core\", features = [\"extra\"] }\n"},
+            {"path": "crates/app/src/main.rs", "content": f"fn main() {{\n    println!(\"{{}}\", {core_name}::feature_label());\n}}\n"},
+        ]
+        target_files = [
+            {"path": "crates/core/Cargo.toml", "content": "[package]\nname = \"" + core_name + "\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n[features]\nextra = []\n"},
+        ]
     return make_record(
         example_id=f"cargo_workspace_fix.{name}.{idx + 1:06d}",
         family_id=family_id,
@@ -1134,7 +1207,7 @@ def gen_workspace(idx: int, tier: str) -> dict[str, object]:
         workspace_files=workspace_files,
         target_files=target_files,
         tags=["cargo", "workspace", name],
-        source_name="cargo_workspace_generator_v1",
+        source_name="cargo_workspace_generator_v2",
         note="Synthetic Cargo/workspace example pending validation.",
     )
 
@@ -1400,7 +1473,11 @@ def main() -> None:
     data_dir = output_dir / "data"
 
     if output_dir.exists():
-        shutil.rmtree(output_dir)
+        shutil.rmtree(data_dir, ignore_errors=True)
+        for removable in ("README.md", "manifest.json"):
+            path = output_dir / removable
+            if path.exists():
+                path.unlink()
     data_dir.mkdir(parents=True, exist_ok=True)
 
     specs = load_batch_specs(source_dir)

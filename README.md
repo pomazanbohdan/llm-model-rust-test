@@ -89,8 +89,12 @@ Latest optimized train milestone:
 
 Latest parallel depth milestone:
 
-- `48/48` core families pass `cheap`, `medium`, and `full`
-- `96/96` parallel family-depth tasks validated
+- `52/52` core families pass `cheap`, `medium`, and `full`
+- Rust coverage expanded with:
+  - `compile_repair.stringify_collect_owned`
+  - `edition2024_migration.static_mut_once_lock`
+  - `async_concurrency_fix.watch_shutdown`
+  - `cargo_workspace_fix.workspace_feature_flag`
 - additional targeted waves passed cleanly:
   - `semantic_impl`: `24/24`
   - `unsafe_ffi_fix`: `15/15`
