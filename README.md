@@ -20,6 +20,21 @@ The initial scaffold in this repository focuses on Phase 1:
 
 The broader rollout and target benchmark size are documented in `docs/benchmark-plan.md`.
 
+## Latest Results
+
+Latest comparison date: `2026-03-25`
+
+| Model | Passed | Total | Pass rate | Compile | Edition2024 | Semantic |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `omnicoder-9b` | 4 | 6 | 66.67% | 2/2 | 2/2 | 0/2 |
+| `qwen3.5-9b` | 3 | 6 | 50.00% | 2/2 | 1/2 | 0/2 |
+| `omnicoder-2-9b` | 2 | 6 | 33.33% | 2/2 | 0/2 | 0/2 |
+| `omnicoder-9b-strand-rust-v1` | 2 | 6 | 33.33% | 1/2 | 1/2 | 0/2 |
+
+Detailed report:
+
+- [reports/2026-03-25-model-comparison.md](/C:/project/rust-test/reports/2026-03-25-model-comparison.md)
+
 ## Layout
 
 ```text
