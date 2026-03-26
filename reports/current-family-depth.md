@@ -3,7 +3,7 @@
 ## Summary
 
 - current dataset rows: `50,000`
-- current audited rows: `49,968`
+- current audited rows: `50,000`
 - stable audited families: `56/56`
 - all-family depth floor: `800`
 - family depth ceiling: `1000`

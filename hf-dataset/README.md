@@ -89,7 +89,7 @@ This dataset is especially suited for models that should edit or generate Rust c
 ## Limitations
 
 - the current release is predominantly synthetic, although it is benchmark-aligned
-- not every row in the 50k corpus is fully execution-validated
+- the corpus is fully audited in the current release, but it is still predominantly synthetic rather than mined from production repositories
 - some quality signals are tracked at the template-family level rather than by exhaustively validating every row
 - the dataset is optimized for modern Rust application and library workflows, not for every possible Rust domain such as embedded, `no_std`, kernel, or GPU-specific development
 
@@ -109,10 +109,11 @@ Current quality work recorded in the repository includes:
 Current snapshot:
 
 - canonical corpus size: `50,000` rows
-- current audited rows on the rebuilt corpus: `49,968`
+- current audited rows on the rebuilt corpus: `50,000`
 - failed audited rows: `0`
 - stable audited families: `56/56`
 - global family-depth floor: `800`
+- the active corpus is now fully audited end-to-end
 - `semantic_impl`, `async_concurrency_fix`, `unsafe_ffi_fix`, and `test_driven_bugfix` are currently at `A+`
 
 Reference reports:

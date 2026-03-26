@@ -85,12 +85,12 @@ python .\scripts\parallel-improve-hf-dataset.py --validation-tier full --window-
 Current dataset quality state:
 
 - canonical corpus size: `50,000` rows
-- current audited rows on the rebuilt corpus: `49,968`
+- current audited rows on the rebuilt corpus: `50,000`
 - `0` failed audited rows
 - all `13` dataset categories are now at `A` or above by family depth
 - global family-depth floor is now `800`
 - current family-depth ceiling is `1,000`
-- `56/56` families are now audited at the active threshold
+- `56/56` families are now fully audited on the active corpus
 - `semantic_impl`, `async_concurrency_fix`, `unsafe_ffi_fix`, and `test_driven_bugfix` are now at `A+`
 
 Current training subset:

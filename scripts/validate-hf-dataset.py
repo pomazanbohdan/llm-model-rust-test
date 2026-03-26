@@ -171,6 +171,7 @@ def main() -> None:
     parser.add_argument("--tiers", choices=["all", "core", "auxiliary"], default="all")
     parser.add_argument("--validation-tier", choices=["cheap", "medium", "full"], default="full")
     parser.add_argument("--family-include", default="", help="Comma-separated family ids to keep. Empty means all.")
+    parser.add_argument("--id-include", default="", help="Comma-separated record ids to validate. Empty means all.")
     parser.add_argument("--timeout-sec", type=int, default=60)
     args = parser.parse_args()
 
@@ -189,12 +190,16 @@ def main() -> None:
     seen_per_category: Counter[str] = Counter()
     seen_per_family: Counter[str] = Counter()
     family_filter = {item.strip() for item in args.family_include.split(",") if item.strip()}
+    id_filter = {item.strip() for item in args.id_include.split(",") if item.strip()}
 
     for _shard_name, _line_number, record in iter_records(data_dir):
         category = str(record["category"])
         tier = str(record["tier"])
         family_id = derive_family_id(record)
+        record_id = str(record["id"])
         if args.tiers != "all" and tier != args.tiers:
+            continue
+        if id_filter and record_id not in id_filter:
             continue
         if family_filter and family_id not in family_filter:
             continue
