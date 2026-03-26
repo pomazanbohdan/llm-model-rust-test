@@ -104,6 +104,7 @@ Current dataset reports:
 
 - [reports/current-dataset-status.md](/C:/project/rust-test/reports/current-dataset-status.md)
 - [reports/current-family-depth.md](/C:/project/rust-test/reports/current-family-depth.md)
+- [reports/current-dataset-diversity.md](/C:/project/rust-test/reports/current-dataset-diversity.md)
 
 ## Layout
 

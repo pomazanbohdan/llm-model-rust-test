@@ -115,11 +115,14 @@ Current snapshot:
 - global family-depth floor: `1000`
 - the active corpus is now fully audited end-to-end
 - all `13` dataset categories are currently at `A+`
+- unique semantic keys: `55,100`
+- semantic uniqueness rate: `98.39%`
 
 Reference reports:
 
 - [Current dataset status](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/current-dataset-status.md)
 - [Current family depth](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/current-family-depth.md)
+- [Current dataset diversity](https://github.com/pomazanbohdan/llm-model-rust-test/blob/main/reports/current-dataset-diversity.md)
 
 ## Category mix
 
