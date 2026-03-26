@@ -23,7 +23,7 @@ This package is a smaller high-confidence training subset built from:
 - additional synthetic rows from stable family templates
 - a small auxiliary tail
 
-- total rows: `14992`
-- verified core rows: `14242`
+- total rows: `14998`
+- verified core rows: `14248`
 - stable synthetic core rows: `0`
 - auxiliary rows: `750`

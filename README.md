@@ -84,20 +84,20 @@ python .\scripts\parallel-improve-hf-dataset.py --validation-tier full --window-
 
 Current dataset quality state:
 
-- canonical corpus size: `50,000` rows
-- current audited rows on the rebuilt corpus: `50,000`
+- canonical corpus size: `56,000` rows
+- current audited rows on the rebuilt corpus: `56,000`
 - `0` failed audited rows
-- all `13` dataset categories are now at `A` or above by family depth
-- global family-depth floor is now `800`
+- all `13` dataset categories are now at `A+` by family depth
+- global family-depth floor is now `1,000`
 - current family-depth ceiling is `1,000`
 - `56/56` families are now fully audited on the active corpus
-- `semantic_impl`, `async_concurrency_fix`, `unsafe_ffi_fix`, and `test_driven_bugfix` are now at `A+`
+- the active corpus is now uniformly audited at `A+` depth across every category
 
 Current training subset:
 
 - [hf-dataset-priority](/C:/project/rust-test/hf-dataset-priority)
-- `14,992` rows
-- `14,242` verified core rows
+- `14,998` rows
+- `14,248` verified core rows
 - `750` auxiliary rows
 
 Current dataset reports:

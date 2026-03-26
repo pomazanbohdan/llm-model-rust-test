@@ -10,7 +10,7 @@ from pathlib import Path
 DEFAULT_REPO_ID = "pomazanbohdan/rustforge-personal-rust-dataset"
 DEFAULT_OUTPUT_DIR = "hf-dataset"
 DEFAULT_SOURCE_DIR = "hf-source/batches"
-DATASET_VERSION = "0.5.3"
+DATASET_VERSION = "0.5.4"
 SHARD_SIZE = 5000
 
 MODIFIERS = [

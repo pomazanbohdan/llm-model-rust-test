@@ -1,8 +1,8 @@
 {
-  "dataset_version": "0.3.0",
-  "description": "Auxiliary Rust-specific mix for the HF-first 50k build.",
+  "dataset_version": "0.4.0",
+  "description": "Auxiliary Rust-specific mix for the HF-first A-plus coverage build.",
   "categories": [
-    { "category": "rust_qa", "count": 2400, "tier": "auxiliary", "generator": "rust_qa" },
-    { "category": "review_preference", "count": 800, "tier": "auxiliary", "generator": "review_preference" }
+    { "category": "rust_qa", "count": 3000, "tier": "auxiliary", "generator": "rust_qa" },
+    { "category": "review_preference", "count": 1000, "tier": "auxiliary", "generator": "review_preference" }
   ]
 }

@@ -24,7 +24,7 @@ configs:
 
 # RustForge Personal Rust Dataset
 
-Current version: `0.5.3`
+Current version: `0.5.4`
 
 Target Hub repo: `pomazanbohdan/rustforge-personal-rust-dataset`
 
@@ -34,7 +34,7 @@ Source repository:
 
 ## Scale
 
-- total records: `50,000`
+- total records: `56,000`
 - format: ChatML-style `messages`
 - storage: sharded JSONL
 
@@ -100,21 +100,21 @@ For stricter training mixes, use the repository tooling to build validated or pr
 Current quality work recorded in the repository includes:
 
 - family-based generation with explicit `family_id`
-- balanced category budgets to control family-depth floors
 - normalized semantic deduplication
 - tiered validation across `cheap`, `medium`, and `full` execution gates
-- parallel tail-fills to close current-corpus audit gaps
+- exact-id tail fills to close the active-corpus audit gap
+- current-only reports for dataset quality and family depth
 - optimized priority-train builders for lower-cost fine-tuning
 
 Current snapshot:
 
-- canonical corpus size: `50,000` rows
-- current audited rows on the rebuilt corpus: `50,000`
+- canonical corpus size: `56,000` rows
+- current audited rows on the rebuilt corpus: `56,000`
 - failed audited rows: `0`
 - stable audited families: `56/56`
-- global family-depth floor: `800`
+- global family-depth floor: `1000`
 - the active corpus is now fully audited end-to-end
-- `semantic_impl`, `async_concurrency_fix`, `unsafe_ffi_fix`, and `test_driven_bugfix` are currently at `A+`
+- all `13` dataset categories are currently at `A+`
 
 Reference reports:
 
@@ -125,16 +125,16 @@ Reference reports:
 
 | Category | Count |
 | --- | ---: |
-| api_refactor | 3200 |
+| api_refactor | 4000 |
 | async_concurrency_fix | 6000 |
-| cargo_workspace_fix | 4000 |
-| clippy_fmt_cleanup | 2400 |
-| compile_repair | 4600 |
-| doctest_doc_fix | 2400 |
-| edition2024_migration | 4800 |
-| macro_fix | 2400 |
-| review_preference | 800 |
-| rust_qa | 2400 |
+| cargo_workspace_fix | 5000 |
+| clippy_fmt_cleanup | 3000 |
+| compile_repair | 5000 |
+| doctest_doc_fix | 3000 |
+| edition2024_migration | 6000 |
+| macro_fix | 3000 |
+| review_preference | 1000 |
+| rust_qa | 3000 |
 | semantic_impl | 8000 |
 | test_driven_bugfix | 4000 |
 | unsafe_ffi_fix | 5000 |
