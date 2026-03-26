@@ -23,22 +23,22 @@ def iter_records(data_dir: Path):
 
 
 def load_jsonl(path: Path) -> list[dict[str, object]]:
-    rows_by_key: dict[tuple[str, str], dict[str, object]] = {}
+    rows_by_id: dict[str, dict[str, object]] = {}
     if path.is_file():
         with path.open("r", encoding="utf-8") as handle:
             for line in handle:
                 if line.strip():
                     row = json.loads(line)
-                    rows_by_key[(str(row.get("id", "")), str(row.get("validation_tier", "")))] = row
-        return list(rows_by_key.values())
+                    rows_by_id[str(row.get("id", ""))] = row
+        return list(rows_by_id.values())
     if path.is_dir():
         for nested in sorted(path.rglob("validation-report.jsonl")):
             with nested.open("r", encoding="utf-8") as handle:
                 for line in handle:
                     if line.strip():
                         row = json.loads(line)
-                        rows_by_key[(str(row.get("id", "")), str(row.get("validation_tier", "")))] = row
-    return list(rows_by_key.values())
+                        rows_by_id[str(row.get("id", ""))] = row
+    return list(rows_by_id.values())
 
 
 def main() -> None:
@@ -75,7 +75,10 @@ def main() -> None:
     })
 
     for item in validation_rows:
-        family_id = str(item.get("family_id") or derive_family_id(rows_by_id[str(item["id"])]))
+        record_id = str(item["id"])
+        if record_id not in rows_by_id:
+            continue
+        family_id = str(item.get("family_id") or derive_family_id(rows_by_id[record_id]))
         stats = family_stats[family_id]
         stats["rows_seen"] += 1
         stats["validation_tiers"][str(item.get("validation_tier", "full"))] += 1

@@ -109,11 +109,12 @@ Current quality work recorded in the repository includes:
 Current snapshot:
 
 - canonical corpus size: `50,000` rows
-- current audited rows on the rebuilt corpus: `27,200`
+- current audited rows on the rebuilt corpus: `49,968`
 - failed audited rows: `0`
 - all `13` dataset categories are at `A` or above by family depth
 - global family-depth floor: `800`
 - family-depth ceiling: `1,375`
+- stable audited families: `56/56`
 
 Reference reports:
 
