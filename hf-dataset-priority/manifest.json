@@ -1,25 +1,26 @@
 {
-  "total_rows": 14995,
+  "total_rows": 8053,
   "bucket_counts": {
-    "verified_core": 14245,
+    "verified_core": 7303,
+    "stable_core": 0,
     "auxiliary_tail": 750
   },
   "category_counts": {
-    "api_refactor": 593,
-    "async_concurrency_fix": 1335,
-    "cargo_workspace_fix": 890,
-    "clippy_fmt_cleanup": 742,
-    "compile_repair": 2375,
-    "doctest_doc_fix": 445,
-    "edition2024_migration": 1484,
-    "macro_fix": 742,
-    "semantic_impl": 2375,
-    "test_driven_bugfix": 1929,
-    "unsafe_ffi_fix": 1335,
+    "api_refactor": 974,
+    "async_concurrency_fix": 1461,
+    "cargo_workspace_fix": 1217,
+    "clippy_fmt_cleanup": 730,
+    "compile_repair": 0,
+    "doctest_doc_fix": 730,
+    "edition2024_migration": 1461,
+    "macro_fix": 730,
+    "semantic_impl": 0,
+    "test_driven_bugfix": 0,
+    "unsafe_ffi_fix": 0,
     "review_preference": 375,
     "rust_qa": 375
   },
   "source_dataset": "hf-dataset",
-  "min_family_validated": 400,
+  "min_family_validated": 800,
   "min_family_pass_rate": 1.0
 }

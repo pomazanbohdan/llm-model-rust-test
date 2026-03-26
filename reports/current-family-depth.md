@@ -2,26 +2,27 @@
 
 ## Summary
 
-- validated rows tracked in family scores: `50,000`
-- stable families: `56/56`
-- core family depth floor: `400`
-- all-family depth floor: `333`
-- family depth ceiling: `3,249`
+- current dataset rows: `50,000`
+- current audited rows: `27,200`
+- stable audited families: `34/56`
+- all-family depth floor: `800`
+- family depth ceiling: `1375`
+- categories below `A`: `0`
 
 ## Depth by Category
 
-| Category | Min family depth | Max family depth | Families |
-| --- | ---: | ---: | ---: |
-| `api_refactor` | 400 | 800 | 4 |
-| `async_concurrency_fix` | 750 | 750 | 6 |
-| `cargo_workspace_fix` | 600 | 600 | 5 |
-| `clippy_fmt_cleanup` | 833 | 834 | 3 |
-| `compile_repair` | 1333 | 2666 | 5 |
-| `doctest_doc_fix` | 500 | 500 | 3 |
-| `edition2024_migration` | 833 | 834 | 6 |
-| `macro_fix` | 833 | 834 | 3 |
-| `review_preference` | 1000 | 1000 | 1 |
-| `rust_qa` | 333 | 334 | 3 |
-| `semantic_impl` | 1000 | 1000 | 8 |
-| `test_driven_bugfix` | 1083 | 3249 | 4 |
-| `unsafe_ffi_fix` | 900 | 900 | 5 |
+| Category | Min family depth | Max family depth | Families | Grade |
+| --- | ---: | ---: | ---: | ---: |
+| `api_refactor` | 800 | 800 | 4 | `A` |
+| `async_concurrency_fix` | 800 | 800 | 6 | `A` |
+| `cargo_workspace_fix` | 800 | 800 | 5 | `A` |
+| `clippy_fmt_cleanup` | 800 | 800 | 3 | `A` |
+| `compile_repair` | 1300 | 1300 | 5 | `A+` |
+| `doctest_doc_fix` | 800 | 800 | 3 | `A` |
+| `edition2024_migration` | 800 | 800 | 6 | `A` |
+| `macro_fix` | 800 | 800 | 3 | `A` |
+| `review_preference` | 800 | 800 | 1 | `A` |
+| `rust_qa` | 800 | 800 | 3 | `A` |
+| `semantic_impl` | 850 | 850 | 8 | `A` |
+| `test_driven_bugfix` | 1375 | 1375 | 4 | `A+` |
+| `unsafe_ffi_fix` | 800 | 800 | 5 | `A` |

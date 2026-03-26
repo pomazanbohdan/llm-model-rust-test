@@ -24,7 +24,7 @@ configs:
 
 # RustForge Personal Rust Dataset
 
-Current version: `0.5.2`
+Current version: `0.5.3`
 
 Target Hub repo: `pomazanbohdan/rustforge-personal-rust-dataset`
 
@@ -100,22 +100,20 @@ For stricter training mixes, use the repository tooling to build validated or pr
 Current quality work recorded in the repository includes:
 
 - family-based generation with explicit `family_id`
+- balanced category/family budgeting to guarantee a category floor of at least `A`
 - normalized semantic deduplication
 - tiered validation across `cheap`, `medium`, and `full` execution gates
-- family-level cascade validation across all expanded core families
-- parallel family-depth validation to grow verified coverage efficiently
+- targeted audit waves for the weakest categories after each rebalance
 - optimized priority-train builders for lower-cost fine-tuning
 
-Current dataset state:
+Current snapshot:
 
-- `52/52` core families pass `cheap`, `medium`, and `full`
-- `50,000` validated rows are tracked across the aggregated quality reports
-- all `13` dataset categories now reach `100%` validated coverage
-- core execution families remain stable and auxiliary families now have schema/content validation coverage as well
-- aggregated validation currently shows `0` failed rows
-- all `56` families satisfy the current stable-family threshold under their category-appropriate validation path
-- current family-depth floor is `400` for core execution families and `333` across all families including auxiliary
-- current family-depth ceiling is `3,249`, reached by the `test_driven_bugfix.nonempty_lines` family
+- canonical corpus size: `50,000` rows
+- current audited rows on the rebuilt corpus: `27,200`
+- failed audited rows: `0`
+- all `13` dataset categories are at `A` or above by family depth
+- global family-depth floor: `800`
+- family-depth ceiling: `1,375`
 
 Reference reports:
 
@@ -126,19 +124,19 @@ Reference reports:
 
 | Category | Count |
 | --- | ---: |
-| api_refactor | 2000 |
-| async_concurrency_fix | 4500 |
-| cargo_workspace_fix | 3000 |
-| clippy_fmt_cleanup | 2500 |
-| compile_repair | 8000 |
-| doctest_doc_fix | 1500 |
-| edition2024_migration | 5000 |
-| macro_fix | 2500 |
-| review_preference | 1000 |
-| rust_qa | 1000 |
-| semantic_impl | 8000 |
-| test_driven_bugfix | 6500 |
-| unsafe_ffi_fix | 4500 |
+| api_refactor | 3200 |
+| async_concurrency_fix | 4800 |
+| cargo_workspace_fix | 4000 |
+| clippy_fmt_cleanup | 2400 |
+| compile_repair | 6500 |
+| doctest_doc_fix | 2400 |
+| edition2024_migration | 4800 |
+| macro_fix | 2400 |
+| review_preference | 800 |
+| rust_qa | 2400 |
+| semantic_impl | 6800 |
+| test_driven_bugfix | 5500 |
+| unsafe_ffi_fix | 4000 |
 
 ## Unsloth compatibility
 
@@ -172,17 +170,6 @@ If your Unsloth or trainer UI expects an instruction-response mapping instead of
 
 - input: `prompt`
 - output: `completion`
-
-## Recommended Low-Cost Training Subset
-
-For lower-cost fine-tuning, the repository currently recommends:
-
-- [`hf-dataset-priority`](https://github.com/pomazanbohdan/llm-model-rust-test/tree/main/hf-dataset-priority)
-- total rows: `14,995`
-- verified core rows: `14,245`
-- auxiliary rows: `750`
-
-This subset is built from the canonical corpus plus aggregated family validation results and is the best current starting point for Rust-focused SFT with a tighter token budget.
 
 ## Repository Layout
 

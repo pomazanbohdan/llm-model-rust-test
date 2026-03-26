@@ -2,16 +2,16 @@
   "dataset_version": "0.3.0",
   "description": "Core Rust coding mix for the HF-first 50k build.",
   "categories": [
-    { "category": "compile_repair", "count": 8000, "tier": "core", "generator": "compile_repair" },
-    { "category": "semantic_impl", "count": 8000, "tier": "core", "generator": "semantic_impl" },
-    { "category": "test_driven_bugfix", "count": 6500, "tier": "core", "generator": "test_driven_bugfix" },
-    { "category": "edition2024_migration", "count": 5000, "tier": "core", "generator": "edition2024_migration" },
-    { "category": "async_concurrency_fix", "count": 4500, "tier": "core", "generator": "async_concurrency_fix" },
-    { "category": "unsafe_ffi_fix", "count": 4500, "tier": "core", "generator": "unsafe_ffi_fix" },
-    { "category": "clippy_fmt_cleanup", "count": 2500, "tier": "core", "generator": "clippy_fmt_cleanup" },
-    { "category": "macro_fix", "count": 2500, "tier": "core", "generator": "macro_fix" },
-    { "category": "api_refactor", "count": 2000, "tier": "core", "generator": "api_refactor" },
-    { "category": "doctest_doc_fix", "count": 1500, "tier": "core", "generator": "doctest_doc_fix" },
-    { "category": "cargo_workspace_fix", "count": 3000, "tier": "core", "generator": "cargo_workspace_fix" }
+    { "category": "compile_repair", "count": 6500, "tier": "core", "generator": "compile_repair" },
+    { "category": "semantic_impl", "count": 6800, "tier": "core", "generator": "semantic_impl" },
+    { "category": "test_driven_bugfix", "count": 5500, "tier": "core", "generator": "test_driven_bugfix" },
+    { "category": "edition2024_migration", "count": 4800, "tier": "core", "generator": "edition2024_migration" },
+    { "category": "async_concurrency_fix", "count": 4800, "tier": "core", "generator": "async_concurrency_fix" },
+    { "category": "unsafe_ffi_fix", "count": 4000, "tier": "core", "generator": "unsafe_ffi_fix" },
+    { "category": "clippy_fmt_cleanup", "count": 2400, "tier": "core", "generator": "clippy_fmt_cleanup" },
+    { "category": "macro_fix", "count": 2400, "tier": "core", "generator": "macro_fix" },
+    { "category": "api_refactor", "count": 3200, "tier": "core", "generator": "api_refactor" },
+    { "category": "doctest_doc_fix", "count": 2400, "tier": "core", "generator": "doctest_doc_fix" },
+    { "category": "cargo_workspace_fix", "count": 4000, "tier": "core", "generator": "cargo_workspace_fix" }
   ]
 }

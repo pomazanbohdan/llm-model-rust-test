@@ -10,7 +10,7 @@ from pathlib import Path
 DEFAULT_REPO_ID = "pomazanbohdan/rustforge-personal-rust-dataset"
 DEFAULT_OUTPUT_DIR = "hf-dataset"
 DEFAULT_SOURCE_DIR = "hf-source/batches"
-DATASET_VERSION = "0.5.2"
+DATASET_VERSION = "0.5.3"
 SHARD_SIZE = 5000
 
 MODIFIERS = [
@@ -222,7 +222,7 @@ def gen_compile_repair(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 1)
     crate_name = f"compile_repair_{name}"
     fallback = f"{pick(MODIFIERS, idx, 2)}-{pick(ENTITIES, idx, 3)}"
-    variant = idx % 6
+    variant = idx % 5
     if variant == 0:
         family_id = "compile_repair.push_first_clone"
         workspace = (
@@ -555,7 +555,7 @@ def gen_semantic_impl(idx: int, tier: str) -> dict[str, object]:
 def gen_bugfix(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 3)
     crate_name = f"bugfix_{name}"
-    variant = idx % 6
+    variant = idx % 4
     if variant == 0:
         family_id = "test_driven_bugfix.normalize_path"
         workspace = (
@@ -1041,7 +1041,7 @@ def gen_macro(idx: int, tier: str) -> dict[str, object]:
 def gen_api(idx: int, tier: str) -> dict[str, object]:
     name = symbol(idx, 9)
     crate_name = f"api_refactor_{name}"
-    variant = idx % 5
+    variant = idx % 4
     if variant == 0:
         family_id = "api_refactor.panic_to_result"
         workspace = f"pub fn parse_{name}_port(input: &str) -> u16 {{\n    input.parse::<u16>().unwrap()\n}}\n"
