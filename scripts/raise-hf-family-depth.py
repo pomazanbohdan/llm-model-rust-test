@@ -46,13 +46,16 @@ def main() -> None:
     parser.add_argument("--full-tail-rows", type=int, default=DEFAULT_FULL_TAIL_ROWS)
     parser.add_argument("--timeout-sec", type=int, default=DEFAULT_TIMEOUT_SEC)
     parser.add_argument("--baseline-category-depths", default="", help="JSON file with category -> baseline depth. When set, targets are computed from that baseline instead of the current validated depth.")
+    parser.add_argument("--use-current-baseline", action="store_true", help="Use each family's current validated depth as the baseline before applying the factor.")
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parent.parent
     score_path = repo_root / args.score_dir / "family-scores.json"
     report_root = repo_root / args.report_root
     report_root.mkdir(parents=True, exist_ok=True)
-    if args.baseline_category_depths:
+    if args.use_current_baseline:
+        baseline_depths = None
+    elif args.baseline_category_depths:
         baseline_depths = json.loads((repo_root / args.baseline_category_depths).read_text(encoding="utf-8"))
     else:
         baseline_depths = DEFAULT_BASELINE_CATEGORY_DEPTHS
@@ -65,7 +68,7 @@ def main() -> None:
         category = str(row["category"])
         current = int(row["validated_rows"])
         total = int(row["total_rows"])
-        baseline = int(baseline_depths.get(category, current))
+        baseline = current if baseline_depths is None else int(baseline_depths.get(category, current))
         target = min(total, max(current, int(round(baseline * args.factor))))
         additional = max(0, target - current)
         plan_rows.append({

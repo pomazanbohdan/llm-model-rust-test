@@ -109,13 +109,13 @@ Current quality work recorded in the repository includes:
 Current dataset state:
 
 - `52/52` core families pass `cheap`, `medium`, and `full`
-- `47,089` validated rows are tracked across the aggregated quality reports
-- all `13` dataset categories now reach `50%+` coverage
+- `50,000` validated rows are tracked across the aggregated quality reports
+- all `13` dataset categories now reach `100%` validated coverage
 - core execution families remain stable and auxiliary families now have schema/content validation coverage as well
 - aggregated validation currently shows `0` failed rows
 - all `56` families satisfy the current stable-family threshold under their category-appropriate validation path
 - current family-depth floor is `400` for core execution families and `333` across all families including auxiliary
-- current family-depth ceiling is `1,626`, reached by the `test_driven_bugfix.nonempty_lines` family
+- current family-depth ceiling is `3,249`, reached by the `test_driven_bugfix.nonempty_lines` family
 
 Reference reports:
 

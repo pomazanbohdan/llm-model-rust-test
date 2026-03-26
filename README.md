@@ -84,14 +84,14 @@ python .\scripts\parallel-improve-hf-dataset.py --validation-tier full --window-
 
 Current dataset quality state:
 
-- `47,089` validated rows across the canonical `hf-dataset`
-- all `13` dataset categories are now at `50%+` ideality coverage
+- `50,000` validated rows across the canonical `hf-dataset`
+- all `13` dataset categories are now at `100%` validated coverage
 - `52/52` core families remain stable on execution validation
 - `56/56` total families are now stable after auxiliary schema validation
 - current family-depth floor is `400` for core families and `333` across all families
-- current family-depth ceiling is `1,626`
+- current family-depth ceiling is `3,249`
 - `0` failed rows in the aggregated family score snapshot
-- capped `x2` family-depth uplift is complete relative to the previous baseline
+- capped family-depth uplift is complete and the full dataset is now covered by validation
 
 Current training subset:
 
