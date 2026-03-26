@@ -100,10 +100,10 @@ For stricter training mixes, use the repository tooling to build validated or pr
 Current quality work recorded in the repository includes:
 
 - family-based generation with explicit `family_id`
-- balanced category/family budgeting to guarantee a category floor of at least `A`
+- balanced category budgets to control family-depth floors
 - normalized semantic deduplication
 - tiered validation across `cheap`, `medium`, and `full` execution gates
-- targeted audit waves for the weakest categories after each rebalance
+- parallel tail-fills to close current-corpus audit gaps
 - optimized priority-train builders for lower-cost fine-tuning
 
 Current snapshot:
@@ -111,10 +111,9 @@ Current snapshot:
 - canonical corpus size: `50,000` rows
 - current audited rows on the rebuilt corpus: `49,968`
 - failed audited rows: `0`
-- all `13` dataset categories are at `A` or above by family depth
-- global family-depth floor: `800`
-- family-depth ceiling: `1,375`
 - stable audited families: `56/56`
+- global family-depth floor: `800`
+- `semantic_impl`, `async_concurrency_fix`, `unsafe_ffi_fix`, and `test_driven_bugfix` are currently at `A+`
 
 Reference reports:
 
@@ -126,18 +125,18 @@ Reference reports:
 | Category | Count |
 | --- | ---: |
 | api_refactor | 3200 |
-| async_concurrency_fix | 4800 |
+| async_concurrency_fix | 6000 |
 | cargo_workspace_fix | 4000 |
 | clippy_fmt_cleanup | 2400 |
-| compile_repair | 6500 |
+| compile_repair | 4600 |
 | doctest_doc_fix | 2400 |
 | edition2024_migration | 4800 |
 | macro_fix | 2400 |
 | review_preference | 800 |
 | rust_qa | 2400 |
-| semantic_impl | 6800 |
-| test_driven_bugfix | 5500 |
-| unsafe_ffi_fix | 4000 |
+| semantic_impl | 8000 |
+| test_driven_bugfix | 4000 |
+| unsafe_ffi_fix | 5000 |
 
 ## Unsloth compatibility
 

@@ -89,15 +89,15 @@ Current dataset quality state:
 - `0` failed audited rows
 - all `13` dataset categories are now at `A` or above by family depth
 - global family-depth floor is now `800`
-- current family-depth ceiling is `1,375`
+- current family-depth ceiling is `1,000`
 - `56/56` families are now audited at the active threshold
-- the weakest categories from the previous pass have been rebalanced to reach `A`, and the remaining families are now covered by the current audit
+- `semantic_impl`, `async_concurrency_fix`, `unsafe_ffi_fix`, and `test_driven_bugfix` are now at `A+`
 
 Current training subset:
 
 - [hf-dataset-priority](/C:/project/rust-test/hf-dataset-priority)
-- `14,993` rows
-- `14,243` verified core rows
+- `14,992` rows
+- `14,242` verified core rows
 - `750` auxiliary rows
 
 Current dataset reports:

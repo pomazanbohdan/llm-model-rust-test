@@ -20,21 +20,21 @@ Grade scale:
 | Category | Audited rows | Total rows | Min..Max family depth | Grade |
 | --- | ---: | ---: | ---: | ---: |
 | `api_refactor` | 3,200 | 3,200 | `800..800` | `A` |
-| `async_concurrency_fix` | 4,800 | 4,800 | `800..800` | `A` |
+| `async_concurrency_fix` | 6,000 | 6,000 | `1000..1000` | `A+` |
 | `cargo_workspace_fix` | 4,000 | 4,000 | `800..800` | `A` |
 | `clippy_fmt_cleanup` | 2,400 | 2,400 | `800..800` | `A` |
-| `compile_repair` | 6,500 | 6,500 | `1300..1300` | `A+` |
+| `compile_repair` | 4,600 | 4,600 | `920..920` | `A` |
 | `doctest_doc_fix` | 2,400 | 2,400 | `800..800` | `A` |
 | `edition2024_migration` | 4,800 | 4,800 | `800..800` | `A` |
 | `macro_fix` | 2,400 | 2,400 | `800..800` | `A` |
 | `review_preference` | 800 | 800 | `800..800` | `A` |
 | `rust_qa` | 2,400 | 2,400 | `800..800` | `A` |
-| `semantic_impl` | 6,784 | 6,800 | `850..850` | `A` |
-| `test_driven_bugfix` | 5,494 | 5,500 | `1375..1375` | `A+` |
-| `unsafe_ffi_fix` | 3,990 | 4,000 | `800..800` | `A` |
+| `semantic_impl` | 7,984 | 8,000 | `1000..1000` | `A+` |
+| `test_driven_bugfix` | 3,994 | 4,000 | `1000..1000` | `A+` |
+| `unsafe_ffi_fix` | 4,990 | 5,000 | `1000..1000` | `A+` |
 
 ## Current Training Subset
 
-- total rows: `14,993`
-- verified core rows: `14,243`
+- total rows: `14,992`
+- verified core rows: `14,242`
 - auxiliary rows: `750`

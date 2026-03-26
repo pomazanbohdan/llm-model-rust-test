@@ -78,7 +78,7 @@ def main() -> None:
         record_id = str(item["id"])
         if record_id not in rows_by_id:
             continue
-        family_id = str(item.get("family_id") or derive_family_id(rows_by_id[record_id]))
+        family_id = derive_family_id(rows_by_id[record_id])
         stats = family_stats[family_id]
         stats["rows_seen"] += 1
         stats["validation_tiers"][str(item.get("validation_tier", "full"))] += 1
